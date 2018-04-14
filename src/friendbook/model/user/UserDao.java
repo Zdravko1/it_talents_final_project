@@ -35,8 +35,16 @@ public class UserDao implements IUserDao{
 	}
 
 	@Override
-	public void saveUser(User u) throws Exception {
-		// TODO Auto-generated method stub
+	public void saveUser(User u) throws SQLException {
+		try(PreparedStatement ps = connection.prepareStatement("INSERT INTO users(username, password, email, first_name, last_name VALUES(?, ?, ?, ?, ?))")){
+			ps.setString(1, u.getUsername());
+			ps.setString(2, u.getPassword());
+			ps.setString(3, u.getEmail());
+			ps.setString(4, u.getFirstName());
+			ps.setString(5, u.getLastName());
+			ps.executeUpdate();
+			ps.close();
+		}
 		
 	}
 
@@ -70,42 +78,43 @@ public class UserDao implements IUserDao{
 		
 	}
 
-	@Override
 	public void loginCheck(String username, String password) throws WrongCredentialsException, SQLException {
-		PreparedStatement ps = connection.prepareStatement("SELECT username, password FROM users WHERE username = ? AND password = ?");
-		ps.setString(1, username);
-		ps.setString(2, password);
-		ResultSet rs = ps.executeQuery();
-		if(!rs.next()) {
-			throw new WrongCredentialsException();
+		try(PreparedStatement ps = connection.prepareStatement("SELECT username, password FROM users WHERE username = ? AND password = ?")){
+			ps.setString(1, username);
+			ps.setString(2, password);
+			ResultSet rs = ps.executeQuery();
+			if(!rs.next()) {
+				throw new WrongCredentialsException();
+			}
+			ps.close();
 		}
 	}
-
-	@Override
-	public boolean existingUserNameCheck(String username) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void existingEmailCheck(String email) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void existingUserCheck(String username, String email) throws SQLException, ExistingUserException {
-		PreparedStatement ps = connection.prepareStatement("SELECT username, email FROM users WHERE username = ? AND email = ?");
-		ps.setString(1, username);
-		ps.setString(2, email);
-		ResultSet rs = ps.executeQuery();
-		
-		//TODO check if this works
-		if(!rs.next()) {
-			throw new ExistingUserException();
-		}
-	}
-
 	
+	public void existingUserCheck(String username, String email) throws SQLException, ExistingUserException {
+		try(PreparedStatement ps = connection.prepareStatement("SELECT username, email FROM users WHERE username = ? AND email = ?")){
+			ps.setString(1, username);
+			ps.setString(2, email);
+			ResultSet rs = ps.executeQuery();
+			//TODO check if this works
+			if(!rs.next()) {
+				throw new ExistingUserException();
+			}
+			ps.close();
+		}
+	}
+
+	@Override
+	public void existingUserNameCheck(String username) throws ExistingUserNameException, SQLException {
+		try(PreparedStatement ps = connection.prepareStatement("SELECT usernameFROM users WHERE username = ?")){
+			ps.setString(1, username);
+			ResultSet rs = ps.executeQuery();
+			//TODO check if this works
+			if(!rs.next()) {
+				throw new ExistingUserNameException();
+			}
+			ps.close();
+		}
+	}
+
 	
 }

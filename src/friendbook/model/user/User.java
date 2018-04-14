@@ -127,11 +127,9 @@ public class User {
 		throw new InvalidEmailException();
 	}
 	
-	private boolean nameCheck(String name) throws Exception{
-		if(name != null 
-				&& name.length() >= User.MIN_NAME_LENGTH 
-				&& name.length() <= User.MAX_NAME_LENGTH 
-				&& !UserDao.getInstance().existingUserNameCheck(name)){
+	private boolean nameCheck(String name) throws ExistingUserNameException, IncorrectUserNameException, SQLException{
+		if(name != null && name.length() >= User.MIN_NAME_LENGTH && name.length() <= User.MAX_NAME_LENGTH){
+			UserDao.getInstance().existingUserNameCheck(name);
 			return true;
 		}
 		throw new IncorrectUserNameException();

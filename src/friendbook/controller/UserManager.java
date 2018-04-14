@@ -2,8 +2,6 @@ package friendbook.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Collections;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -54,23 +52,20 @@ public class UserManager {
 			throw e;
 		}
 	}
-//	
-//	public boolean register(String username, String password, String email) throws InvalidPasswordException, IncorrectUserNameException, ExistingUserNameException, InvalidEmailException, ExistingUserException {
-////		//validations
-////		User u = new User(username, password, email);
-////		try {
-////			//validate name, pass and email
-////			UserDao.getInstance().registerCheck(username, password, email);
-////			//check if same user exists
-////			UserDao.getInstance().existingUserCheck(username, email);
-////			//save in db
-////			UserDao.getInstance().saveUser(u);
-////			return true;
-////		} catch (SQLException e) {
-////			System.out.println("Sori, ama ima bug: " + e.getMessage());
-////			return false;
-////		}
-//	}
+	
+	public boolean register(User u) throws InvalidPasswordException, IncorrectUserNameException, ExistingUserNameException, InvalidEmailException, ExistingUserException, SQLException {
+		//validations
+		try {
+			//check if same user exists
+			UserDao.getInstance().existingUserCheck(u.getUsername(), u.getEmail());
+			//save in db
+			UserDao.getInstance().saveUser(u);
+			return true;
+		} catch (SQLException e) {
+			System.out.println("Sori, ama ima bug: " + e.getMessage());
+			throw e;
+		}
+	}
 //	
 //	public Collection<User> getAll(){
 //		try {
@@ -83,4 +78,5 @@ public class UserManager {
 //	public User getUserFromId(int id) throws SQLException {
 //		return UserDao.getInstance().getByID(id);
 //	}
+	
 }

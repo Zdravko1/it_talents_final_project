@@ -12,8 +12,7 @@ public interface IUserDao {
 	void reply(User u, Comment comment, Comment reply);
 	void likePost(Post post);
 	void likeComment(Comment comment);
-	void loginCheck(String username, String password) throws Exception;
-	boolean existingUserNameCheck(String username) throws Exception;
-	void existingEmailCheck(String email) throws Exception;
+	void existingUserNameCheck(String username) throws Exception;
 	void existingUserCheck(String username, String email) throws Exception;
+	void loginCheck(String username, String password) throws Exception;
 }
