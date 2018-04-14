@@ -54,7 +54,6 @@ public class UserManager {
 	}
 	
 	public boolean register(User u) throws InvalidPasswordException, IncorrectUserNameException, ExistingUserNameException, InvalidEmailException, ExistingUserException, SQLException {
-		//validations
 		try {
 			//check if same user exists
 			UserDao.getInstance().existingUserCheck(u.getUsername(), u.getEmail());

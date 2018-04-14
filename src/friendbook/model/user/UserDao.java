@@ -18,7 +18,11 @@ public class UserDao implements IUserDao{
 
 	public static UserDao getInstance() {
 		if(instance == null) {
-			instance = new UserDao();
+			synchronized (UserDao.class) {
+				if(instance == null) {
+					instance = new UserDao();
+				}
+			}
 		}
 		return instance;
 	}
@@ -36,7 +40,7 @@ public class UserDao implements IUserDao{
 
 	@Override
 	public void saveUser(User u) throws SQLException {
-		try(PreparedStatement ps = connection.prepareStatement("INSERT INTO users(username, password, email, first_name, last_name VALUES(?, ?, ?, ?, ?))")){
+		try(PreparedStatement ps = connection.prepareStatement("INSERT INTO users(username, password, email, first_name, last_name) VALUES(?, ?, ?, ?, ?)")){
 			ps.setString(1, u.getUsername());
 			ps.setString(2, u.getPassword());
 			ps.setString(3, u.getEmail());
@@ -96,7 +100,7 @@ public class UserDao implements IUserDao{
 			ps.setString(2, email);
 			ResultSet rs = ps.executeQuery();
 			//TODO check if this works
-			if(!rs.next()) {
+			if(rs.next()) {
 				throw new ExistingUserException();
 			}
 			ps.close();
@@ -105,11 +109,11 @@ public class UserDao implements IUserDao{
 
 	@Override
 	public void existingUserNameCheck(String username) throws ExistingUserNameException, SQLException {
-		try(PreparedStatement ps = connection.prepareStatement("SELECT usernameFROM users WHERE username = ?")){
+		try(PreparedStatement ps = connection.prepareStatement("SELECT username FROM users WHERE username = ?")){
 			ps.setString(1, username);
 			ResultSet rs = ps.executeQuery();
 			//TODO check if this works
-			if(!rs.next()) {
+			if(rs.next()) {
 				throw new ExistingUserNameException();
 			}
 			ps.close();

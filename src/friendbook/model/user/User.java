@@ -26,7 +26,7 @@ public class User {
 	
 	private Set<User> following; //users who are followed by this user
 	
-	public User(String username, String password, String email, String firstName, String lastName) throws Exception {
+	public User(String username, String password, String email, String firstName, String lastName) throws ExistingUserNameException, IncorrectUserNameException, SQLException, InvalidPasswordException, InvalidEmailException  {
 		setUsername(username);
 		setPassword(password);
 		setEmail(email);
@@ -69,10 +69,13 @@ public class User {
 		return Collections.unmodifiableSet(following);
 	}
 
+	public int getId() {
+		return id;
+	}
 	
 	//setters
-	public void setUsername(String username) throws Exception {
-		if(nameCheck(username)) {
+	public void setUsername(String username) throws ExistingUserNameException, IncorrectUserNameException, SQLException {
+		if(userNameCheck(username)) {
 			this.username = username;
 		}
 	}
@@ -90,13 +93,13 @@ public class User {
 	}
 
 	public void setFirstName(String firstName) {
-		if(firstName != null && firstName.length() > 1) {
+		if(firstName != null && firstName.trim().length() > 1) {
 			this.firstName = firstName;
 		}
 	}
 
 	public void setLastName(String lastName) {
-		if(lastName != null && lastName.length() > 1) {
+		if(lastName != null && lastName.trim().length() > 1) {
 			this.lastName = lastName;
 		}
 	}
@@ -127,7 +130,7 @@ public class User {
 		throw new InvalidEmailException();
 	}
 	
-	private boolean nameCheck(String name) throws ExistingUserNameException, IncorrectUserNameException, SQLException{
+	private boolean userNameCheck(String name) throws ExistingUserNameException, IncorrectUserNameException, SQLException{
 		if(name != null && name.length() >= User.MIN_NAME_LENGTH && name.length() <= User.MAX_NAME_LENGTH){
 			UserDao.getInstance().existingUserNameCheck(name);
 			return true;
