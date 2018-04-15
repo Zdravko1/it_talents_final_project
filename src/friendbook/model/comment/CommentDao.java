@@ -62,11 +62,12 @@ public class CommentDao implements ICommentDao {
 		}
 		PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 		statement.setString(1, comment.getText());
-		statement.setLong(2, comment.getPost().getId());
+		statement.setLong(2, comment.getPost());
 		if (!isParentless) {
 			statement.setLong(3, comment.getParentComment().getId());
+			statement.setLong(4, user.getId());
 		}
-		statement.setLong(4, user.getId());
+		statement.setLong(3, user.getId());
 		statement.executeUpdate();
 		ResultSet rs = statement.getGeneratedKeys();
 		rs.next();

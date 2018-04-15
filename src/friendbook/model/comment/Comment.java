@@ -8,12 +8,12 @@ public class Comment {
 	private long id;
 	private String text;
 	private User user;
-	private Post post;
+	private long postId;
 	private Comment parentComment;
 	
-	public Comment(User user, Post post, Comment parentComment, String text) {
+	public Comment(User user, long postId, Comment parentComment, String text) {
 		this.user = user;
-		this.post = post;
+		this.postId = postId;
 		this.parentComment = parentComment;
 		setText(text);
 	}
@@ -25,8 +25,8 @@ public class Comment {
 		this.text = text;
 	}
 	
-	public Post getPost() {
-		return post;
+	public Long getPost() {
+		return postId;
 	}
 	
 	public Comment getParentComment() {
