@@ -19,16 +19,20 @@ public class LikeServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//TODO not working
 		System.out.println(req.getParameter("like"));
 		int id = Integer.parseInt(req.getParameter("like"));
 		User u = (User)req.getSession().getAttribute("user");
 		try {
-			PostManager.getInstance().increasePostLikes(u, id);
+			if(UserManager.getInstance().isPostLiked(u, id)) {
+				PostManager.getInstance().decreasePostLikes(u, id);
+				req.getRequestDispatcher("index2.jsp").forward(req, resp);
+			} else {
+				PostManager.getInstance().increasePostLikes(u, id);
+				req.getRequestDispatcher("index2.jsp").forward(req, resp);
+			}
 		} catch (SQLException e) {
-			System.out.println("SQL BUG: " + e.getMessage());
+			System.out.println("SQL Bug: " + e.getMessage());
 		}
-		req.getRequestDispatcher("index2.jsp").forward(req, resp);
 	}
 	
 	@Override

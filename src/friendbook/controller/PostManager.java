@@ -44,4 +44,10 @@ public class PostManager {
 	public void increasePostLikes(User u, int id) throws SQLException {
 		PostDao.getInstance().increasePostLike(u, id);
 	}
+
+
+	public void decreasePostLikes(User u, int id) throws SQLException {
+		PostDao.getInstance().decreasePostLike(u, id);
+	}
+
 }

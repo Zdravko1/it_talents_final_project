@@ -86,5 +86,9 @@ public class UserManager {
 	public List<Post> getPostsByUserID(long id) throws SQLException {
 		return UserDao.getInstance().getPostsByUserID(id);
 	}
+
+	public boolean isPostLiked(User u, int id) throws SQLException {
+		return UserDao.getInstance().isPostLiked(u, id);
+	}
 	
 }

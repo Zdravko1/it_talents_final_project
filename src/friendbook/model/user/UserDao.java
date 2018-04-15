@@ -163,4 +163,18 @@ public class UserDao implements IUserDao{
 		return posts;
 	}
 
+	public boolean isPostLiked(User u, int id) throws SQLException {
+		String query = "SELECT * FROM users_likes_posts WHERE users_id = ? AND posts_id = ?";
+		try(PreparedStatement ps = connection.prepareStatement(query)){
+			ps.setLong(1, u.getId());
+			ps.setInt(2, id);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+				ps.close();
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
