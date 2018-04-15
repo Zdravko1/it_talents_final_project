@@ -26,15 +26,19 @@ public class User {
 	
 	private Set<User> following; //users who are followed by this user
 	
-	public User(String username, String password, String email, String firstName, String lastName) throws ExistingUserNameException, IncorrectUserNameException, SQLException, InvalidPasswordException, InvalidEmailException  {
-		setUsername(username);
-		setPassword(password);
-		setEmail(email);
-		setFirstName(firstName);
-		setLastName(lastName);
+	public User() {
+		
 	}
 	
-	public User(int id, String username, String password, String email, String firstName, String lastName) throws Exception {
+	public User(String username, String password, String email, String firstName, String lastName) {
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
+	
+	public User(int id, String username, String password, String email, String firstName, String lastName) {
 		this(username, password, email, firstName, lastName);
 		this.id = id;
 	}
@@ -74,6 +78,12 @@ public class User {
 	}
 	
 	//setters
+	public void setId(int id) {
+		if(id > 0){
+			this.id = id;
+		}
+	}
+	
 	public void setUsername(String username) throws ExistingUserNameException, IncorrectUserNameException, SQLException {
 		if(userNameCheck(username)) {
 			this.username = username;
@@ -136,5 +146,10 @@ public class User {
 			return true;
 		}
 		throw new IncorrectUserNameException();
+	}
+	
+	@Override
+	public String toString() {
+		return firstName + " " + lastName;
 	}
 }

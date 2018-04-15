@@ -7,6 +7,9 @@ import java.sql.SQLException;
 
 import friendbook.exceptions.ExistingUserException;
 import friendbook.exceptions.ExistingUserNameException;
+import friendbook.exceptions.IncorrectUserNameException;
+import friendbook.exceptions.InvalidEmailException;
+import friendbook.exceptions.InvalidPasswordException;
 import friendbook.exceptions.WrongCredentialsException;
 import friendbook.model.comment.Comment;
 import friendbook.model.post.Post;
@@ -32,10 +35,32 @@ public class UserDao implements IUserDao{
 	}
 	
 	
+	
 	@Override
-	public User getByID(int id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public User getUserByUsername(String username) throws SQLException {
+		String query = "SELECT username, password, email, first_name, last_name FROM users WHERE username = ?";
+		try(PreparedStatement ps = connection.prepareStatement(query)){
+			ps.setString(1, username);
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			User u = new User(rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("first_name"), rs.getString("last_name"));
+			ps.close();
+			return u;
+		}
+	}
+
+	@Override
+	public User getByID(int id) throws SQLException {
+		User u = null;
+		String query = "SELECT * FROM users WHERE id = ?";
+		try(PreparedStatement ps = connection.prepareStatement(query)){
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			u = new User(rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("first_name"), rs.getString("last_name"));
+			ps.close();
+			return u;
+		}
 	}
 
 	@Override
@@ -120,5 +145,4 @@ public class UserDao implements IUserDao{
 		}
 	}
 
-	
 }

@@ -35,10 +35,14 @@ public class RegisterServlet extends HttpServlet {
 		if(password.compareTo(password2)!=0){
 			response.getWriter().write("Passwords don't match! ");
 		}
-
 		
 		try {
-			User u = new User(username, password, email, firstName, lastName);
+			User u = new User();
+			u.setUsername(username);
+			u.setPassword(password);
+			u.setEmail(email);
+			u.setFirstName(firstName);
+			u.setLastName(lastName);
 			UserManager.getInstance().register(u);
 			response.getWriter().write("You have been registered!");
 		} catch (InvalidPasswordException | IncorrectUserNameException | ExistingUserNameException

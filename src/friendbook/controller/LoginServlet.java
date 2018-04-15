@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import friendbook.exceptions.WrongCredentialsException;
+import friendbook.model.user.User;
+import friendbook.model.user.UserDao;
 
 /**
  * Servlet implementation class LoginServlet
@@ -19,15 +21,16 @@ public class LoginServlet extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		//UserManager.getInstance().sessionCheck(request, response);
+		UserManager.getInstance().sessionCheck(request, response);
 		
 		try {
 			String username = request.getParameter("username");
 			String password = request.getParameter("pass");
 			if(UserManager.getInstance().login(username, password)) {
-				response.getWriter().write("Congratulations, " + username + " you have been logged in successfully!");
 				HttpSession session = request.getSession();
-				session.setAttribute("username", username);
+				User user = UserDao.getInstance().getUserByUsername(username);
+				session.setAttribute("user", user);
+				request.getRequestDispatcher("index.jsp").forward(request, response);
 			}
 			else {
  			    response.getWriter().write("Wrong username and/or password.");

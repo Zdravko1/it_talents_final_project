@@ -36,10 +36,10 @@ public class UserManager {
 	public void sessionCheck(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		if(session.isNew()) {
-			request.getRequestDispatcher("login.html").forward(request, response);
+			request.getRequestDispatcher("loginAndRegister.html").forward(request, response);
 		}
 		else {
-			request.getRequestDispatcher("landingPage.jsp").forward(request, response);
+			request.getRequestDispatcher("index.jsp").forward(request, response);
 		}
 	}
 	
@@ -53,7 +53,7 @@ public class UserManager {
 		}
 	}
 	
-	public boolean register(User u) throws InvalidPasswordException, IncorrectUserNameException, ExistingUserNameException, InvalidEmailException, ExistingUserException, SQLException {
+	public boolean register(User u) throws ExistingUserException, SQLException {
 		try {
 			//check if same user exists
 			UserDao.getInstance().existingUserCheck(u.getUsername(), u.getEmail());

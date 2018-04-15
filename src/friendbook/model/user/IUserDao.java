@@ -5,6 +5,7 @@ import friendbook.model.post.Post;
 
 public interface IUserDao {
 
+	User getUserByUsername(String username) throws Exception;
 	User getByID(int id) throws Exception;
 	void saveUser(User u) throws Exception;
 	void post(User u, Post post);
