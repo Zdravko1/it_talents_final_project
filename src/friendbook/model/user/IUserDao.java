@@ -8,7 +8,7 @@ import friendbook.model.post.Post;
 public interface IUserDao {
 
 	User getUserByUsername(String username) throws Exception;
-	User getByID(int id) throws Exception;
+	User getByID(long id) throws Exception;
 	void saveUser(User u) throws Exception;
 	void post(User u, Post post);
 	void commentToPost(User u, Comment comment, Post post);
@@ -18,5 +18,5 @@ public interface IUserDao {
 	void existingUserNameCheck(String username) throws Exception;
 	void existingUserCheck(String username, String email) throws Exception;
 	void loginCheck(String username, String password) throws Exception;
-	List<Post> getPostsByUserID(int id) throws Exception;
+	List<Post> getPostsByUserID(long id) throws Exception;
 }

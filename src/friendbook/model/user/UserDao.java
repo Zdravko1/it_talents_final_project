@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+import friendbook.controller.PostManager;
 import friendbook.exceptions.ExistingUserException;
 import friendbook.exceptions.ExistingUserNameException;
 import friendbook.exceptions.WrongCredentialsException;
@@ -49,11 +50,11 @@ public class UserDao implements IUserDao{
 	}
 
 	@Override
-	public User getByID(int id) throws SQLException {
+	public User getByID(long id) throws SQLException {
 		User u = null;
 		String query = "SELECT * FROM users WHERE id = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
-			ps.setInt(1, id);
+			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			u = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("first_name"), rs.getString("last_name"));
@@ -145,15 +146,17 @@ public class UserDao implements IUserDao{
 	}
 
 	@Override
-	public List<Post> getPostsByUserID(int id) throws SQLException {
+	public List<Post> getPostsByUserID(long id) throws SQLException {
 		LinkedList<Post> posts = new LinkedList<>();
 		String query = "SELECT id, description FROM posts WHERE user_id = ? ORDER BY date DESC";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
-			ps.setInt(1, id);
+			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
 			User u = UserDao.getInstance().getByID(id);
 			while(rs.next()) {
-				posts.addLast(new Post(rs.getInt("id"), u, rs.getString("description")));
+				Post p = new Post(rs.getInt("id"), u, rs.getString("description"));
+				p.setLikes(PostManager.getInstance().getLikes(rs.getInt("id")));
+				posts.addLast(p);
 			}
 			ps.close();
 		}

@@ -28,12 +28,7 @@ public class AddPostServlet extends HttpServlet {
 		User user = (User)s.getAttribute("user");
 		Post post = new Post(user, (String)req.getParameter("text"));
 		try {
-			PostDao.getInstance().addPostWithText(post);
-			//TODO in post manager
-			LinkedList<Post> posts = (LinkedList)s.getAttribute("posts");
-			posts.addFirst(post);
-			s.setAttribute("posts", posts);
-			//
+			PostManager.getInstance().addPost(post, s);
 			System.out.println("Added post to database.");
 			req.getRequestDispatcher("index2.jsp").forward(req, resp);
 		} catch (SQLException e) {

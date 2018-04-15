@@ -2,6 +2,7 @@ package friendbook.model.post;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import friendbook.model.user.DBManager;
@@ -30,6 +31,21 @@ public class PostDao implements IPostDao {
 	
 	@Override
 	public void addPost(Post post) throws SQLException {
+		String query;
+		boolean hasImage = post.getImagePath() == null;
+		if(hasImage) {
+			query = "INSERT INTO posts(image_video_path, description, user_id) VALUES(?,?,?)";
+		} else {
+			query = "INSERT INTO posts(image_video_path, description, user_id) VALUES(null,?,?)";
+		}
+		PreparedStatement ps = connection.prepareStatement(query);
+		if(hasImage) {
+			ps.setString(1, post.getImagePath());
+		}
+		ps.setString(2, post.getText());
+		ps.setLong(3, post.getUser().getId());
+		ps.executeUpdate();
+		ps.close();
 		
 	}
 
@@ -39,15 +55,27 @@ public class PostDao implements IPostDao {
 		
 	}
 
-	@Override
-	public void addPostWithText(Post post) throws SQLException {
-		String query = "INSERT INTO posts(description, user_id) VALUES(?,?)";
+	public int getLikesByID(int id) throws SQLException {
+		int likes = 0;
+		String query = "SELECT COUNT(users_id) AS likes FROM users_likes_posts WHERE posts_id = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
-			ps.setString(1, post.getText());
-			ps.setInt(2, post.getUser().getId());
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			likes = rs.getInt("likes");
+		}
+		return likes;
+	}
+
+	public void increasePostLike(User u, int id) throws SQLException {
+		String query = "INSERT INTO users_likes_posts VALUES(?,?)";
+		try(PreparedStatement ps = connection.prepareStatement(query)){
+			ps.setInt(1, id);
+			ps.setLong(2, u.getId());
 			ps.executeUpdate();
 			ps.close();
 		}
 	}
+
 
 }

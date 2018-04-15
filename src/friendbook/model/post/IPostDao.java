@@ -11,6 +11,4 @@ public interface IPostDao {
 
 	void deletePost(Post post) throws SQLException;
 	
-	void addPostWithText(Post post) throws Exception; // testing
-
 }

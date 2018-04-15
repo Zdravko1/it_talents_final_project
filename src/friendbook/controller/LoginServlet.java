@@ -23,19 +23,19 @@ public class LoginServlet extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		UserManager.getInstance().sessionCheck(request, response);
+	//	UserManager.getInstance().sessionCheck(request, response);
 		
 		try {
 			String username = request.getParameter("username");
 			String password = request.getParameter("pass");
 			if(UserManager.getInstance().login(username, password)) {
 				HttpSession session = request.getSession();
-				User user = UserDao.getInstance().getUserByUsername(username);
+				User user = UserManager.getInstance().getUser(username);
 				//get user's posts and put them in his session
-				List<Post> posts = UserDao.getInstance().getPostsByUserID(user.getId());
+				List<Post> posts = UserManager.getInstance().getPostsByUserID(user.getId());
 				session.setAttribute("user", user);
 				session.setAttribute("posts", posts);
-				request.getRequestDispatcher("index.jsp").forward(request, response);
+				request.getRequestDispatcher("index2.jsp").forward(request, response);
 			}
 			else {
  			    response.getWriter().write("Wrong username and/or password.");
