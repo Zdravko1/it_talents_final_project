@@ -35,6 +35,10 @@ public class PostManager {
 			session.setAttribute("posts", posts);
 		}
 	}
+	
+	public void deletePost(long postId) throws SQLException {
+		PostDao.getInstance().deletePost(postId);
+	}
 
 
 	public int getLikes(int id) throws SQLException {

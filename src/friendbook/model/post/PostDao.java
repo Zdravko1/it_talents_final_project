@@ -50,9 +50,9 @@ public class PostDao implements IPostDao {
 	}
 
 	@Override
-	public void deletePost(Post post) throws SQLException {
+	public void deletePost(long postId) throws SQLException {
 		PreparedStatement ps = connection.prepareStatement("DELETE FROM posts WHERE id = ?");
-		ps.setLong(1, post.getId());
+		ps.setLong(1, postId);
 		ps.close();
 	}
 

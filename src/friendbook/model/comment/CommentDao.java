@@ -76,9 +76,9 @@ public class CommentDao implements ICommentDao {
 	}
 
 	@Override
-	public void deleteComment(Comment comment) throws SQLException {
+	public void deleteComment(long commentId) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("DELETE FROM comments WHERE id = ?");
-		statement.setLong(1, comment.getId());
+		statement.setLong(1, commentId);
 		statement.executeUpdate();
 		statement.close();
 	}

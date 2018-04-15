@@ -15,16 +15,15 @@ import friendbook.model.post.Post;
 import friendbook.model.post.PostDao;
 import friendbook.model.user.User;
 
-
-
 @WebServlet("/comment")
 public class CommentServlet extends HttpServlet {
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		Session.validateRequestIp(request, response);
-		
+
 		HttpSession s = request.getSession();
-		User user = (User)s.getAttribute("user");
+		User user = (User) s.getAttribute("user");
 		int postId = Integer.parseInt(request.getParameter("currentPost"));
 		Comment comment = new Comment(user, postId, null, request.getParameter("text"));
 		try {
@@ -32,8 +31,23 @@ public class CommentServlet extends HttpServlet {
 			request.getRequestDispatcher("index2.jsp").forward(request, response);
 		} catch (SQLException e) {
 			System.out.println("SQLBug: " + e.getMessage());
-		} catch(Exception e) {
+		} catch (Exception e) {
 			System.out.println("Bug: " + e.getMessage());
+		}
+	}
+
+	@Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		Session.validateRequestIp(request, response);
+		// TODO make it so that only the user that created the post can delete it
+		try {
+			HttpSession s = request.getSession();
+			User user = (User) s.getAttribute("user");
+			long commentId = Long.parseLong(request.getParameter("commentId"));
+			CommentManager.getInstance().deleteComment(commentId);
+		} catch (Exception e) {
+			System.out.println("Sql : " + e.getMessage());
 		}
 	}
 

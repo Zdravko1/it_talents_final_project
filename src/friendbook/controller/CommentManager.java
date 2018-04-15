@@ -37,8 +37,8 @@ public class CommentManager {
 		CommentDao.getInstance().addComment(comment.getUser() ,comment);
 	}
 
-	public void deleteComment(Comment comment) throws SQLException {
-		CommentDao.getInstance().deleteComment(comment);
+	public void deleteComment(long commentId) throws SQLException {
+		CommentDao.getInstance().deleteComment(commentId);
 	}
 	
 	public void addPost(Post post, HttpSession session) throws SQLException {
