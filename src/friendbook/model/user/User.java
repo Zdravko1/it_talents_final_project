@@ -17,7 +17,7 @@ public class User {
 	private static final int MIN_NAME_LENGTH = 6;
 	private static final int MAX_NAME_LENGTH = 20;
 	
-	private int id;
+	private long id;
 	private String username;
 	private String password; //bcrypt
 	private String email;
@@ -76,7 +76,7 @@ public class User {
 		return Collections.unmodifiableSet(following);
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 	

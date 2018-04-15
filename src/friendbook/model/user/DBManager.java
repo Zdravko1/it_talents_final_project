@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DBManager {
 	
-	private static final String DB_PASS = "zdravko1";
+	private static final String DB_PASS = "j2c7h2o5";
 	private static final String DB_USER = "root";
 	private static final String DB_PORT = "3306";
 	private static final String DB_IP = "127.0.0.1";
