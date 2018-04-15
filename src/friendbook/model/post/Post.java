@@ -9,6 +9,12 @@ public class Post {
 	private User user;
 	private String imagePath;
 	
+	//for testing purposes
+	public Post(User user, String text) {
+		this.user = user;
+		setText(text);
+	}
+	
 	public Post(User user, String text, String imagePath) {
 		this.user = user;
 		setText(text);

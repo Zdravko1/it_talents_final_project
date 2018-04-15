@@ -38,12 +38,12 @@ public class UserDao implements IUserDao{
 	
 	@Override
 	public User getUserByUsername(String username) throws SQLException {
-		String query = "SELECT username, password, email, first_name, last_name FROM users WHERE username = ?";
+		String query = "SELECT id, username, password, email, first_name, last_name FROM users WHERE username = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
 			ps.setString(1, username);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
-			User u = new User(rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("first_name"), rs.getString("last_name"));
+			User u = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("first_name"), rs.getString("last_name"));
 			ps.close();
 			return u;
 		}
@@ -57,7 +57,7 @@ public class UserDao implements IUserDao{
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
-			u = new User(rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("first_name"), rs.getString("last_name"));
+			u = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("first_name"), rs.getString("last_name"));
 			ps.close();
 			return u;
 		}

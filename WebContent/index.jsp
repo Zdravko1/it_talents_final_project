@@ -64,8 +64,12 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
               <h6 class="w3-opacity">Post something</h6>
-              <p contenteditable="true" class="w3-border w3-padding"></p>
-              <button type="button" class="w3-button w3-theme"><i class="fa fa-pencil"></i>Post</button> 
+              <form action="post" method="post">
+              	 <input contenteditable="true" class="w3-border w3-padding" name="text">
+              	 <br>
+              	 <br>
+              	 <button type="submit" class="w3-button w3-theme"><i class="fa fa-pencil"></i>Post</button> 
+              </form>
             </div>
           </div>
         </div>
