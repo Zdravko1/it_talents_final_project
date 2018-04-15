@@ -8,6 +8,7 @@ import friendbook.exceptions.ExistingUserNameException;
 import friendbook.exceptions.IncorrectUserNameException;
 import friendbook.exceptions.InvalidEmailException;
 import friendbook.exceptions.InvalidPasswordException;
+import friendbook.model.post.Post;
 
 public class User {
 
@@ -25,9 +26,11 @@ public class User {
 	private int followers;
 	
 	private Set<User> following; //users who are followed by this user
+	private Set<Post> posts;
 	
+	
+	//TODO change later
 	public User() {
-		
 	}
 	
 	public User(String username, String password, String email, String firstName, String lastName) {
@@ -77,10 +80,20 @@ public class User {
 		return id;
 	}
 	
+	public Set<Post> getPosts(){
+		return Collections.unmodifiableSet(this.posts);
+	}
+	
 	//setters
 	public void setId(int id) {
 		if(id > 0){
 			this.id = id;
+		}
+	}
+	
+	public void setPosts(Set<Post> posts) {
+		if(posts != null) {
+			this.posts = posts;
 		}
 	}
 	

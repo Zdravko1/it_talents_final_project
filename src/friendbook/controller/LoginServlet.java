@@ -1,6 +1,7 @@
 package friendbook.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import friendbook.exceptions.WrongCredentialsException;
+import friendbook.model.post.Post;
 import friendbook.model.user.User;
 import friendbook.model.user.UserDao;
 
@@ -29,7 +31,10 @@ public class LoginServlet extends HttpServlet {
 			if(UserManager.getInstance().login(username, password)) {
 				HttpSession session = request.getSession();
 				User user = UserDao.getInstance().getUserByUsername(username);
+				//get user's posts and put them in his session
+				List<Post> posts = UserDao.getInstance().getPostsByUserID(user.getId());
 				session.setAttribute("user", user);
+				session.setAttribute("posts", posts);
 				request.getRequestDispatcher("index.jsp").forward(request, response);
 			}
 			else {

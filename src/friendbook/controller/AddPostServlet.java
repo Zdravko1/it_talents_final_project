@@ -2,6 +2,8 @@ package friendbook.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,15 +28,24 @@ public class AddPostServlet extends HttpServlet {
 		User user = (User)s.getAttribute("user");
 		Post post = new Post(user, (String)req.getParameter("text"));
 		try {
-			System.out.println(user.getId());
 			PostDao.getInstance().addPostWithText(post);
+			//TODO in post manager
+			LinkedList<Post> posts = (LinkedList)s.getAttribute("posts");
+			posts.addFirst(post);
+			s.setAttribute("posts", posts);
+			//
 			System.out.println("Added post to database.");
-			req.getRequestDispatcher("index.jsp");
+			req.getRequestDispatcher("index2.jsp").forward(req, resp);
 		} catch (SQLException e) {
 			System.out.println("SQLBug: " + e.getMessage());
 		} catch(Exception e) {
 			System.out.println("Bug: " + e.getMessage());
 		}
+	}
+	
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		UserManager.getInstance().sessionCheck(req, resp);
 	}
 
 }

@@ -1,5 +1,7 @@
 package friendbook.model.user;
 
+import java.util.List;
+
 import friendbook.model.comment.Comment;
 import friendbook.model.post.Post;
 
@@ -16,4 +18,5 @@ public interface IUserDao {
 	void existingUserNameCheck(String username) throws Exception;
 	void existingUserCheck(String username, String email) throws Exception;
 	void loginCheck(String username, String password) throws Exception;
+	List<Post> getPostsByUserID(int id) throws Exception;
 }

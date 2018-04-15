@@ -36,10 +36,10 @@ public class UserManager {
 	public void sessionCheck(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		if(session.isNew()) {
-			request.getRequestDispatcher("loginAndRegister.html").forward(request, response);
+			request.getRequestDispatcher("index.html").forward(request, response);
 		}
 		else {
-			request.getRequestDispatcher("index.jsp").forward(request, response);
+			request.getRequestDispatcher("index2.jsp").forward(request, response);
 		}
 	}
 	

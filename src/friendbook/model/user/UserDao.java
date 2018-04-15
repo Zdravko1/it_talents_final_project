@@ -4,12 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 import friendbook.exceptions.ExistingUserException;
 import friendbook.exceptions.ExistingUserNameException;
-import friendbook.exceptions.IncorrectUserNameException;
-import friendbook.exceptions.InvalidEmailException;
-import friendbook.exceptions.InvalidPasswordException;
 import friendbook.exceptions.WrongCredentialsException;
 import friendbook.model.comment.Comment;
 import friendbook.model.post.Post;
@@ -143,6 +142,22 @@ public class UserDao implements IUserDao{
 			}
 			ps.close();
 		}
+	}
+
+	@Override
+	public List<Post> getPostsByUserID(int id) throws SQLException {
+		LinkedList<Post> posts = new LinkedList<>();
+		String query = "SELECT id, description FROM posts WHERE user_id = ? ORDER BY date DESC";
+		try(PreparedStatement ps = connection.prepareStatement(query)){
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+			User u = UserDao.getInstance().getByID(id);
+			while(rs.next()) {
+				posts.addLast(new Post(rs.getInt("id"), u, rs.getString("description")));
+			}
+			ps.close();
+		}
+		return posts;
 	}
 
 }

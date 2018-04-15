@@ -15,6 +15,13 @@ public class Post {
 		setText(text);
 	}
 	
+	public Post(int id, User user, String text) {
+		this(user, text);
+		this.id = id;
+	}
+	//
+	
+	
 	public Post(User user, String text, String imagePath) {
 		this.user = user;
 		setText(text);
