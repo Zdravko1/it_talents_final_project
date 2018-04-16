@@ -1,4 +1,4 @@
-<%@page import="java.util.LinkedList"%>
+ <%@page import="java.util.LinkedList"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="java.util.Set"%>
@@ -29,14 +29,15 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 </style>
 <body class="w3-theme-l5">
 
-<% boolean visit = request.getSession().getAttribute("visitedUser") != null; %>
+<% boolean visit = request.getSession().getAttribute("visitedUser") != null; 
+	boolean onFeed = request.getSession().getAttribute("feed") != null;	%>
 
 <!-- Navbar -->
 <div class="w3-top">
  <div class="w3-bar w3-theme-d2 w3-left-align w3-large">
   <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
   	<a href="" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>Home</a>
-  <a href="feed" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="News"><i class="fa fa-globe"></i></a>
+  <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="News"><i class="fa fa-globe"></i></a>
   <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="My Account"><i class="fa fa-user"></i></a>
   <a href="logout" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Log Out</a>
   
@@ -78,7 +79,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
     <!-- Middle Column -->
     <div class="w3-col m7">
     
-      <div class="w3-row-padding" style="display : <%= visit ? "none" : "" %>">
+      <div class="w3-row-padding" style="display : <%= (visit || onFeed) ? "none" : "" %>">
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
@@ -93,94 +94,3 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
           </div>
         </div>
       </div>
-      
-      <% 
-      	LinkedList<Post> posts = visit ? (LinkedList)request.getSession().getAttribute("visitedUserPosts") : (LinkedList)request.getAttribute("posts");
-      	if(posts != null){
-      	for(Post p : posts){
-      %>
-      <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
-        <span class="w3-right w3-opacity">1 min</span>
-        <h4><%= p.getUser()	%></h4><br>
-        <!-- -=============POST IMAGE================- -->
-        <img src="/w3images/avatar2.png" alt="Image" class="w3-left w3-circle w3-margin-right" style="width:60px"> 
-        <hr class="w3-clear">
-        <p><%= p.getText() %></p>
-          <div class="w3-row-padding" style="margin:0 -16px">
-	      </div>
-	   <form method="post" action="like">
-	      <input type="hidden" name="like" value="<%= p.getId()%>">
-	      <button type="submit" class="w3-button w3-theme-d1 w3-margin-bottom" ><i class="fa fa-thumbs-up"></i>Like</button><%= p.getLikes() %>
-	      
-      </form>
-      <form action="comment" method="post">
-              	 <input contenteditable="true" class="w3-border w3-padding" name="text">
-              	  <input type="hidden" name="currentPost" value="<%= p.getId()%>">
-              	 <br>
-              	 <button type="submit" class="w3-button w3-theme"><i class="fa fa-pencil"></i>Comment</button> 
-              </form>
-         </div> 
-      <%}} %>
-    <!-- End Middle Column -->
-    </div>
-    
-  <!-- End Grid -->
-  </div>
-  
-<!-- End Page Container -->
-</div>
-<br>
-
-<!-- Footer -->
-<footer class="w3-container w3-theme-d3 w3-padding-16">
-  <h5>Footer</h5>
-</footer>
- 
-<script>
-//search
-$(document).ready(function() {
-    $(function() {
-        $("#search").autocomplete({     
-            source : function(request, response) {
-              $.ajax({
-                   url : "searchServlet",
-                   type : "GET",
-                   data : {
-                          term : request.term
-                   },
-                   dataType : "json",
-                   success : function(data) {
-                         response(data);
-                   }
-            });
-         }
-     });
-  });
-});
-
-// Accordion
-function myFunction(id) {
-    var x = document.getElementById(id);
-    if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-        x.previousElementSibling.className += " w3-theme-d1";
-    } else { 
-        x.className = x.className.replace("w3-show", "");
-        x.previousElementSibling.className = 
-        x.previousElementSibling.className.replace(" w3-theme-d1", "");
-    }
-}
-
-// Used to toggle the menu on smaller screens when clicking on the menu button
-function openNav() {
-    var x = document.getElementById("navDemo");
-    if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-    } else { 
-        x.className = x.className.replace(" w3-show", "");
-    }
-}
-</script>
-
-</body>
-</html>

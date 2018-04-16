@@ -28,14 +28,13 @@ public class PostServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Session.validateRequestIp(req, resp);
-		UserManager.getInstance().sessionCheck(req, resp);
 		
 		User user = (User)req.getSession().getAttribute("user");
 		Post post = new Post(user, (String)req.getParameter("text"));
 		try {
 			PostManager.getInstance().addPost(post, req);
 			System.out.println("Added post to database.");
-			req.getRequestDispatcher("index2.jsp").forward(req, resp);
+			UserManager.getInstance().sessionCheck(req, resp);
 		} catch (SQLException e) {
 			System.out.println("SQLBug: " + e.getMessage());
 		} catch(Exception e) {

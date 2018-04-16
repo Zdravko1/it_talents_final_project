@@ -33,7 +33,7 @@ public class DBManager {
 		System.out.println("Driver loaded");
 		//create connection
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://"+DB_IP+":"+DB_PORT+"/" + DB_NAME, DB_USER, DB_PASS);
+			connection = DriverManager.getConnection("jdbc:mysql://"+DB_IP+":"+DB_PORT+"/" + DB_NAME, DB_USER, DB_PASS2);
 		} catch (SQLException e) {
 			System.out.println("Sorry, connection failed. Maybe wrong credentials?");
 			System.out.println(e.getMessage());

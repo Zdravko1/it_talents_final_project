@@ -2,6 +2,7 @@ package friendbook.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -44,6 +45,8 @@ public class UserManager {
 			//remove visited user's object and name from session when "home" button is pressed
 			session.removeAttribute("visitedUser");
 			session.removeAttribute("visitedUserPosts");
+			//remove feed posts
+			session.removeAttribute("feed");
 			//reload user's posts on refresh
 			try {
 				User user = (User) session.getAttribute("user");
@@ -107,6 +110,10 @@ public class UserManager {
 
 	public void follow(User user, long followedId) throws SQLException {
 		UserDao.getInstance().followUser(user, followedId);
+	}
+
+	public ArrayList<Post> getUserFeed(long id) throws SQLException {
+		return UserDao.getInstance().getUserFeedByID(id);
 	}
 	
 }

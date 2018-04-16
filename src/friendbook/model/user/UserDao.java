@@ -14,6 +14,7 @@ import friendbook.exceptions.ExistingUserNameException;
 import friendbook.exceptions.WrongCredentialsException;
 import friendbook.model.comment.Comment;
 import friendbook.model.post.Post;
+import friendbook.model.post.PostDao;
 
 public class UserDao implements IUserDao {
 
@@ -36,7 +37,6 @@ public class UserDao implements IUserDao {
 	}
 
 	@Override
-
 	public User getUserByNames(String name) throws SQLException {
 		String query = "SELECT id, username, password, email, first_name, last_name FROM users WHERE CONCAT(first_name,' ', last_name) = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
@@ -80,7 +80,8 @@ public class UserDao implements IUserDao {
 		}
 
 	}
-	
+		
+	@Override
 	public void followUser(User user, long followedId) throws SQLException {
 		try (PreparedStatement ps = connection.prepareStatement(
 				"INSERT INTO users_has_users (user_id, user_id_follower) VALUES (?,?)")) {	
@@ -90,7 +91,8 @@ public class UserDao implements IUserDao {
 			ps.close();
 		}
 	}
-
+	
+	@Override
 	public void loginCheck(String username, String password) throws WrongCredentialsException, SQLException {
 		try (PreparedStatement ps = connection.prepareStatement("SELECT password FROM users WHERE username = ?")) {
 			ps.setString(1, username);
@@ -103,6 +105,7 @@ public class UserDao implements IUserDao {
 		}
 	}
 
+	@Override
 	public void existingUserCheck(String username, String email) throws SQLException, ExistingUserException {
 		try (PreparedStatement ps = connection
 				.prepareStatement("SELECT username, email FROM users WHERE username = ? AND email = ?")) {
@@ -147,7 +150,8 @@ public class UserDao implements IUserDao {
 		}
 		return posts;
 	}
-
+	
+	@Override
 	public boolean isPostLiked(User u, int id) throws SQLException {
 		String query = "SELECT * FROM users_likes_posts WHERE user_id = ? AND post_id = ?";
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
@@ -161,7 +165,8 @@ public class UserDao implements IUserDao {
 		}
 		return false;
 	}
-
+	
+	@Override
 	public List<String> getUsersNamesStartingWith(String term) throws SQLException {
 		List<String> names = new ArrayList<>();
 		String query = "SELECT concat(first_name,' ', last_name) AS name FROM users WHERE Concat(first_name, ' ', last_name) LIKE ?";
@@ -175,7 +180,8 @@ public class UserDao implements IUserDao {
 		}
 		return names;
 	}
-
+	
+	@Override
 	public User getUserByUsername(String username) throws SQLException {
 		String query = "SELECT * FROM users WHERE username = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
@@ -186,6 +192,24 @@ public class UserDao implements IUserDao {
 			ps.close();
 			return u;
 		}
+	}
+	
+	@Override
+	public ArrayList<Post> getUserFeedByID(long id) throws SQLException {
+		ArrayList<Post> feed = new ArrayList<>();
+		String query = "SELECT id, image_video_path, description, date, user_id FROM posts WHERE user_id IN (SELECT user_id FROM users_has_users WHERE user_id_follower = ?)";
+		try(PreparedStatement ps = connection.prepareStatement(query)){
+			ps.setLong(1, id);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				User u = getByID(rs.getInt("user_id"));
+				Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), rs.getDate("date"), u);
+				p.setLikes(PostManager.getInstance().getLikes(p.getId()));
+				p.setLikes(PostManager.getInstance().getLikes(rs.getInt("id")));
+				feed.add(p);
+			}
+		}
+		return feed;
 	}
 
 }

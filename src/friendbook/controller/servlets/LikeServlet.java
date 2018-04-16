@@ -32,18 +32,36 @@ public class LikeServlet extends HttpServlet {
 			if(UserManager.getInstance().isPostLiked(u, id)) {
 				PostManager.getInstance().decreasePostLikes(u, id);
 				req.setAttribute("posts", UserManager.getInstance().getPostsByUserID(u.getId()));
-				reloadVisitedUserProducts(req, resp);
+				//if on feed reload posts and page
+				//if not "reloadVisitedUserPosts" checks if u are visiting someone's profile or not
+				//and reloads corresponding page
+				if(!reloadFeedPosts(req, resp)) {
+					reloadVisitedUserPosts(req, resp);
+				}
 			} else {
 				PostManager.getInstance().increasePostLikes(u, id);
 				req.setAttribute("posts", UserManager.getInstance().getPostsByUserID(u.getId()));
-				reloadVisitedUserProducts(req, resp);
+				if(!reloadFeedPosts(req, resp)) {
+					reloadVisitedUserPosts(req, resp);
+				}
 			}
 		} catch (SQLException e) {
 			System.out.println("SQL Bug: " + e.getMessage());
 		}
 	}
 	
-	private void reloadVisitedUserProducts(HttpServletRequest req, HttpServletResponse resp) throws SQLException, ServletException, IOException {
+	private boolean reloadFeedPosts(HttpServletRequest req, HttpServletResponse resp) throws SQLException, ServletException, IOException {
+		User u = (User) req.getSession().getAttribute("user");
+		boolean onFeed = req.getSession().getAttribute("feed") != null;
+		if(onFeed) {
+			req.getSession().setAttribute("feed", UserManager.getInstance().getUserFeed(u.getId()));
+			req.getRequestDispatcher("newsFeed.jsp").forward(req, resp);
+			return true;
+		}
+		return false;
+	}
+	
+	private void reloadVisitedUserPosts(HttpServletRequest req, HttpServletResponse resp) throws SQLException, ServletException, IOException {
 		User visited = (User)req.getSession().getAttribute("visitedUser");
 		if(visited != null) {
 			req.getSession().setAttribute("visitedUserPosts", UserManager.getInstance().getPostsByUserID(visited.getId()));

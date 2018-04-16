@@ -1,4 +1,4 @@
-package friendbook.controller;
+package friendbook.controller.servlets;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import friendbook.controller.CommentManager;
+import friendbook.controller.Session;
 import friendbook.model.comment.Comment;
 import friendbook.model.post.Post;
 import friendbook.model.post.PostDao;

@@ -1,22 +1,22 @@
 package friendbook.model.user;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-import friendbook.exceptions.ExistingUserException;
-import friendbook.exceptions.ExistingUserNameException;
-import friendbook.exceptions.WrongCredentialsException;
-import friendbook.model.comment.Comment;
 import friendbook.model.post.Post;
 
 public interface IUserDao {
 
-	User getUserByNames(String name) throws SQLException;
-	User getByID(long id) throws SQLException;
-	void saveUser(User u) throws SQLException;
-	void existingUserNameCheck(String username) throws ExistingUserNameException, SQLException;
-	void existingUserCheck(String username, String email) throws SQLException, ExistingUserException;
-	void loginCheck(String username, String password) throws WrongCredentialsException, SQLException;
-	List<Post> getPostsByUserID(long id) throws SQLException;
-	public void followUser(User user, long followedId) throws SQLException;
+	User getUserByNames(String name) throws Exception;
+	User getByID(long id) throws Exception;
+	void saveUser(User u) throws Exception;
+	void existingUserNameCheck(String username) throws Exception;
+	void existingUserCheck(String username, String email) throws Exception;
+	void loginCheck(String username, String password) throws Exception;
+	List<Post> getPostsByUserID(long id) throws Exception;
+	void followUser(User user, long followedId) throws Exception;
+	ArrayList<Post> getUserFeedByID(long id) throws Exception;
+	User getUserByUsername(String username) throws Exception;
+	List<String> getUsersNamesStartingWith(String term) throws Exception;
+	boolean isPostLiked(User u, int id) throws Exception;
 }

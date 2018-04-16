@@ -11,6 +11,7 @@ public class Post {
 	private User user;
 	private String imagePath;
 	private int likes;
+	private Date date;
 	
 	//for testing purposes
 	public Post(User user, String text) {
@@ -28,6 +29,14 @@ public class Post {
 		this.user = user;
 		setText(text);
 		this.imagePath = imagePath;
+	}
+
+	public Post(int id, String imagePath, String text, Date date, User user) {
+		this.id = id;
+		this.imagePath = imagePath;
+		this.text = text;
+		this.date = date;
+		this.user = user;
 	}
 
 	public void setText(String text) {

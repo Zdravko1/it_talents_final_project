@@ -1,4 +1,4 @@
-package friendbook.controller;
+package friendbook.controller.servlets;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import friendbook.controller.Session;
+import friendbook.controller.UserManager;
 import friendbook.model.user.User;
 
 

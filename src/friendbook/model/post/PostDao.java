@@ -56,6 +56,7 @@ public class PostDao implements IPostDao {
 		ps.close();
 	}
 
+	@Override
 	public int getLikesByID(long id) throws SQLException {
 		int likes = 0;
 		String query = "SELECT COUNT(user_id) AS likes FROM users_likes_posts WHERE post_id = ?";
@@ -68,6 +69,7 @@ public class PostDao implements IPostDao {
 		return likes;
 	}
 
+	@Override
 	public void increasePostLike(User u, long id) throws SQLException {
 		String query = "INSERT INTO users_likes_posts VALUES(?,?)";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
@@ -77,7 +79,8 @@ public class PostDao implements IPostDao {
 			ps.close();
 		}
 	}
-
+	
+	@Override
 	public void decreasePostLike(User u, long id) throws SQLException {
 		String query = "DELETE FROM users_likes_posts WHERE user_id = ? AND post_id = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){

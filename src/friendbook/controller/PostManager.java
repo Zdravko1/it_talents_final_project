@@ -42,7 +42,7 @@ public class PostManager {
 	}
 
 
-	public int getLikes(int id) throws SQLException {
+	public int getLikes(long id) throws SQLException {
 		return PostDao.getInstance().getLikesByID(id);
 	}
 
