@@ -80,36 +80,17 @@ public class UserDao implements IUserDao {
 		}
 
 	}
-
-	@Override
-	public void post(User u, Post post) {
-		// TODO Auto-generated method stub
-
+	
+	public void followUser(User user, long followedId) throws SQLException {
+		try (PreparedStatement ps = connection.prepareStatement(
+				"INSERT INTO users_has_users (user_id, user_id_follower) VALUES (?,?)")) {	
+			ps.setLong(1, user.getId());
+			ps.setLong(2, followedId);
+			ps.executeUpdate();
+			ps.close();
+		}
 	}
 
-	@Override
-	public void commentToPost(User u, Comment comment, Post post) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void reply(User u, Comment comment, Comment reply) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void likePost(Post post) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void likeComment(Comment comment) {
-		// TODO Auto-generated method stub
-
-	}
 
 	public void loginCheck(String username, String password) throws WrongCredentialsException, SQLException {
 		try (PreparedStatement ps = connection.prepareStatement("SELECT password FROM users WHERE username = ?")) {

@@ -24,7 +24,7 @@ public class CommentServlet extends HttpServlet {
 
 		HttpSession s = request.getSession();
 		User user = (User) s.getAttribute("user");
-		int postId = Integer.parseInt(request.getParameter("currentPost"));
+		long postId = Long.parseLong(request.getParameter("currentPost"));
 		Comment comment = new Comment(user, postId, null, request.getParameter("text"));
 		try {
 			CommentManager.getInstance().createComment(comment, request);

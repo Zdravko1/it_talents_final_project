@@ -24,7 +24,6 @@ public class Post {
 	}
 	//
 	
-	
 	public Post(User user, String text, String imagePath) {
 		this.user = user;
 		setText(text);
