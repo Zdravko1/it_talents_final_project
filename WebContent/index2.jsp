@@ -29,7 +29,10 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 </style>
 <body class="w3-theme-l5">
 
-<% boolean visit = request.getSession().getAttribute("visitedUser") != null; %>
+<% 
+User u = (User)request.getSession().getAttribute("visitedUser");
+boolean visit = u != null; 
+boolean onFeed = request.getSession().getAttribute("feed") != null; %>
 
 <!-- Navbar -->
 <div class="w3-top">
@@ -66,7 +69,19 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
       <div class="w3-card w3-round w3-white">
         <div class="w3-container">
          <h4 class="w3-center"><%= (visit) ? "Profile" : "My Profile"%></h4>
-         <h4 class="w3-center"><%= (visit) ? request.getSession().getAttribute("visitedUser") : request.getSession().getAttribute("user") %></h4>
+         <h4 class="w3-center"><%= (visit) ? u : request.getSession().getAttribute("user") %></h4>
+         <div style="display : <%= !visit ? "none" : "" %>">
+         	
+         		<% if(visit){
+         			if(!u.isFollowed()){%>
+         		<form method="post" action="follow">
+         		<button type="submit" name="followedId" value="<%=u.getId()%>" class="w3-button w3-theme"><i class="fa fa-handshake-o"></i>Follow</button>
+         		</form>
+         		<% } else {%>
+         		<button   class="w3-button w3-theme"><i class="fa fa-heart"></i>Followed</button>
+         		<%}}%>
+         	
+         </div>
          <hr>
         </div>
       </div>

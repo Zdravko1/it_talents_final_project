@@ -35,13 +35,19 @@ public class LikeServlet extends HttpServlet {
 				//if on feed reload posts and page
 				//if not "reloadVisitedUserPosts" checks if u are visiting someone's profile or not
 				//and reloads corresponding page
-				if(!reloadFeedPosts(req, resp)) {
+				if(reloadFeedPosts(req, resp)) {
+					
+				}
+				else {
 					reloadVisitedUserPosts(req, resp);
 				}
 			} else {
 				PostManager.getInstance().increasePostLikes(u, id);
 				req.setAttribute("posts", UserManager.getInstance().getPostsByUserID(u.getId()));
-				if(!reloadFeedPosts(req, resp)) {
+				if(reloadFeedPosts(req, resp)) {
+					
+				}
+				else {
 					reloadVisitedUserPosts(req, resp);
 				}
 			}

@@ -19,4 +19,5 @@ public interface IUserDao {
 	User getUserByUsername(String username) throws Exception;
 	List<String> getUsersNamesStartingWith(String term) throws Exception;
 	boolean isPostLiked(User u, int id) throws Exception;
+	boolean isFollower(User follower, long userId) throws Exception;
 }

@@ -1,10 +1,11 @@
 package friendbook.model.post;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 import friendbook.model.user.User;
 
-public class Post {
+public class Post implements Serializable{
 
 	private long id;
 	private String text;

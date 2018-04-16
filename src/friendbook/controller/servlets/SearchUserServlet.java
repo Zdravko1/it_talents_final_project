@@ -23,10 +23,14 @@ public class SearchUserServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		User user = (User)req.getSession().getAttribute("user");
 		String name = req.getParameter("user");
 		//cash visited user's object and posts in session
 		try {
 			User u = UserManager.getInstance().getUser(name);
+			if(UserManager.getInstance().isFollower(user, u.getId())) {
+				u.setFollowed(true);
+			}
 			req.getSession().setAttribute("visitedUser", u);
 			req.getSession().setAttribute("visitedUserPosts", UserManager.getInstance().getPostsByUserID(u.getId()));
 			req.getRequestDispatcher("index2.jsp").forward(req, resp);

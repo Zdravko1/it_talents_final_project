@@ -23,25 +23,25 @@ public class FeedServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		//TODO delete
-		try {
-			User u = (User) req.getSession().getAttribute("user");
-			ArrayList<Post> feed = UserManager.getInstance().getUserFeed(u.getId());
-			req.getSession().setAttribute("feed", feed);
-			req.getRequestDispatcher("newsFeed.jsp").forward(req, resp);
-		} catch (SQLException e) {
-			System.out.println("SQL Bug: " + e.getMessage());
-		}
+		UserManager.getInstance().sessionCheck(req, resp);
 		
 	}
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+		//remove visited user's object and name from session when "home" button is pressed
+		req.getSession().removeAttribute("visitedUser");
+		req.getSession().removeAttribute("visitedUserPosts");
 		try {
 			User u = (User) req.getSession().getAttribute("user");
 			ArrayList<Post> feed = UserManager.getInstance().getUserFeed(u.getId());
 			req.getSession().setAttribute("feed", feed);
-			req.getRequestDispatcher("newsFeed.jsp").forward(req, resp);
+			if(feed != null) {
+				req.getRequestDispatcher("newsFeed.jsp").forward(req, resp);
+				return;
+			}
+			req.getRequestDispatcher("index2.jsp").forward(req, resp);
 		} catch (SQLException e) {
 			System.out.println("SQL Bug: " + e.getMessage());
 		}

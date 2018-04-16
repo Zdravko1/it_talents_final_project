@@ -22,7 +22,8 @@ public class CommentServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Session.validateRequestIp(request, response);
+		//TODO fix  bugavo e
+//		Session.validateRequestIp(request, response);
 
 		HttpSession s = request.getSession();
 		User user = (User) s.getAttribute("user");

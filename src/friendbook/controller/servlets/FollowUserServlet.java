@@ -18,13 +18,14 @@ public class FollowUserServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		Session.validateRequestIp(req, resp);
+//		Session.validateRequestIp(req, resp);
 		//TODO check if working
 		HttpSession s = req.getSession();
 		User user = (User) s.getAttribute("user");
 		long followedId = Long.parseLong(req.getParameter("followedId"));
 		try {
 			UserManager.getInstance().follow(user, followedId);
+			System.out.println("followed someone");
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

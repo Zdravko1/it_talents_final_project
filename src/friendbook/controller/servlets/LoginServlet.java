@@ -1,6 +1,7 @@
 package friendbook.controller.servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -24,15 +25,14 @@ import friendbook.model.user.UserDao;
 public class LoginServlet extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		Session.validateRequestIp(request, response);
+		HttpSession session = request.getSession();
+//		Session.validateRequestIp(request, response);
 //		UserManager.getInstance().sessionCheck(request, response);
 		
 		try {
 			String username = request.getParameter("username");
 			String password = request.getParameter("pass");
 			if(UserManager.getInstance().login(username, password)) {
-				HttpSession session = request.getSession();
 				User user = UserManager.getInstance().getUserByUsername(username);
 				//get user's posts and put them in request
 				List<Post> posts = UserManager.getInstance().getPostsByUserID(user.getId());
@@ -41,11 +41,13 @@ public class LoginServlet extends HttpServlet {
 				request.getRequestDispatcher("index2.jsp").forward(request, response);
 			}
 			else {
- 			    response.getWriter().write("Wrong username and/or password.");
+ 			   // response.getWriter().write("Wrong username and/or password.");
 			}
 		
+		} catch (WrongCredentialsException e) {
+			System.out.println("Exception: "+ e.getMessage() );
 		} catch (Exception e) {
-			response.getWriter().write("Some error occured: " + e.getMessage());
+			System.out.println("Some error occured: " + e.getMessage());
 		}
 	}
 	

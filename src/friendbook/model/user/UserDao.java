@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -85,8 +86,8 @@ public class UserDao implements IUserDao {
 	public void followUser(User user, long followedId) throws SQLException {
 		try (PreparedStatement ps = connection.prepareStatement(
 				"INSERT INTO users_has_users (user_id, user_id_follower) VALUES (?,?)")) {	
-			ps.setLong(1, user.getId());
-			ps.setLong(2, followedId);
+			ps.setLong(1, followedId);
+			ps.setLong(2, user.getId());
 			ps.executeUpdate();
 			ps.close();
 		}
@@ -209,7 +210,24 @@ public class UserDao implements IUserDao {
 				feed.add(p);
 			}
 		}
+		Collections.sort(feed, (p1, p2) -> (p2.getLikes()-p1.getLikes()));
 		return feed;
+	}
+
+	@Override
+	public boolean isFollower(User follower, long userId) throws SQLException {
+		String query = "SELECT * FROM users_has_users WHERE user_id_follower = ? AND user_id = ?";
+		try(PreparedStatement ps = connection.prepareStatement(query)){
+			ps.setLong(1, follower.getId());
+			ps.setLong(2, userId);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+				ps.close();
+				return true;
+			}
+			ps.close();
+		}
+		return false;
 	}
 
 }

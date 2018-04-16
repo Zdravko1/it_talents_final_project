@@ -24,6 +24,7 @@ public class User {
 	private String firstName;
 	private String lastName;
 	private int followers;
+	private boolean isFollowed; //using it to show/hide follow button, will remove later if i find better way to do it.
 	
 	private Set<User> following; //users who are followed by this user
 	private Set<Post> posts;
@@ -84,6 +85,10 @@ public class User {
 		return Collections.unmodifiableSet(this.posts);
 	}
 	
+	public boolean isFollowed() {
+		return isFollowed;
+	}
+	
 	//setters
 	public void setId(long id) {
 		if(id > 0){
@@ -137,6 +142,9 @@ public class User {
 		}
 	}
 	
+	public void setFollowed(boolean isFollowed) {
+		this.isFollowed = isFollowed;
+	}
 	
 	//validations
 	private boolean passwordCheck(String password) throws InvalidPasswordException {
