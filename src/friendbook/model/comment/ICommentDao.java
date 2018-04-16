@@ -8,7 +8,7 @@ public interface ICommentDao {
 
 	void addComment(User user, Comment comment) throws SQLException;
 
-	void deleteComment(Comment comment) throws SQLException;
+	void deleteComment(long commentId) throws SQLException;
 
 	void changeComment(Comment comment) throws SQLException;
 

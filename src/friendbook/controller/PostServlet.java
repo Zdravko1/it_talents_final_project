@@ -20,10 +20,12 @@ import friendbook.model.user.User;
  * Servlet implementation class AddPostServlet
  */
 @WebServlet("/post")
-public class AddPostServlet extends HttpServlet {
+public class PostServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Session.validateRequestIp(req, resp);
+		
 		HttpSession s = req.getSession();
 		User user = (User)s.getAttribute("user");
 		Post post = new Post(user, (String)req.getParameter("text"));
@@ -41,6 +43,20 @@ public class AddPostServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		UserManager.getInstance().sessionCheck(req, resp);
+	}
+	
+	@Override
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Session.validateRequestIp(req, resp);
+		//TODO make it so that only the user that created the post can delete it
+		try {
+		HttpSession s = req.getSession();
+		User user = (User)s.getAttribute("user");
+		long postId = Long.parseLong(req.getParameter("postId"));
+		PostManager.getInstance().deletePost(postId);
+		} catch (Exception e) {
+			System.out.println("Sql : " + e.getMessage());
+		}
 	}
 
 }

@@ -1,6 +1,8 @@
 package friendbook.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,23 +11,43 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import friendbook.model.comment.Comment;
+import friendbook.model.post.Post;
+import friendbook.model.post.PostDao;
 import friendbook.model.user.User;
-
-
 
 @WebServlet("/comment")
 public class CommentServlet extends HttpServlet {
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		Session.validateRequestIp(request, response);
+
+		HttpSession s = request.getSession();
+		User user = (User) s.getAttribute("user");
+		int postId = Integer.parseInt(request.getParameter("currentPost"));
+		Comment comment = new Comment(user, postId, null, request.getParameter("text"));
 		try {
-		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute("user");
-		// TODO get current Post
-		//Comment comment = new Comment(user, post, null, request.getParameter("text"));
-		//CommentManager.getInstance().createComment(user, comment);
+			CommentManager.getInstance().createComment(comment);
+			request.getRequestDispatcher("index2.jsp").forward(request, response);
+		} catch (SQLException e) {
+			System.out.println("SQLBug: " + e.getMessage());
 		} catch (Exception e) {
-			response.getWriter().write(e.getMessage());
+			System.out.println("Bug: " + e.getMessage());
+		}
+	}
+
+	@Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		Session.validateRequestIp(request, response);
+		// TODO make it so that only the user that created the post can delete it
+		try {
+			HttpSession s = request.getSession();
+			User user = (User) s.getAttribute("user");
+			long commentId = Long.parseLong(request.getParameter("commentId"));
+			CommentManager.getInstance().deleteComment(commentId);
+		} catch (Exception e) {
+			System.out.println("Sql : " + e.getMessage());
 		}
 	}
 

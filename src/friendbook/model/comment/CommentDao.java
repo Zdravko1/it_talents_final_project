@@ -62,11 +62,12 @@ public class CommentDao implements ICommentDao {
 		}
 		PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 		statement.setString(1, comment.getText());
-		statement.setLong(2, comment.getPost().getId());
+		statement.setLong(2, comment.getPost());
 		if (!isParentless) {
 			statement.setLong(3, comment.getParentComment().getId());
+			statement.setLong(4, user.getId());
 		}
-		statement.setLong(4, user.getId());
+		statement.setLong(3, user.getId());
 		statement.executeUpdate();
 		ResultSet rs = statement.getGeneratedKeys();
 		rs.next();
@@ -75,9 +76,9 @@ public class CommentDao implements ICommentDao {
 	}
 
 	@Override
-	public void deleteComment(Comment comment) throws SQLException {
+	public void deleteComment(long commentId) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("DELETE FROM comments WHERE id = ?");
-		statement.setLong(1, comment.getId());
+		statement.setLong(1, commentId);
 		statement.executeUpdate();
 		statement.close();
 	}

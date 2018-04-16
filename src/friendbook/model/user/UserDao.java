@@ -34,8 +34,6 @@ public class UserDao implements IUserDao{
 		connection = DBManager.getInstance().getConnection();
 	}
 	
-	
-	
 	@Override
 	public User getUserByUsername(String username) throws SQLException {
 		String query = "SELECT id, username, password, email, first_name, last_name FROM users WHERE username = ?";

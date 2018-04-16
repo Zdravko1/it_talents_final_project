@@ -11,7 +11,6 @@ public class Post {
 	private User user;
 	private String imagePath;
 	private int likes;
-	private Date date;
 	
 	//for testing purposes
 	public Post(User user, String text) {
@@ -31,8 +30,6 @@ public class Post {
 		setText(text);
 		this.imagePath = imagePath;
 	}
-	
-	
 
 	public void setText(String text) {
 		if (text == null || text.trim().isEmpty()) {

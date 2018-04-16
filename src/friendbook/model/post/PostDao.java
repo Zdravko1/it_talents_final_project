@@ -50,14 +50,15 @@ public class PostDao implements IPostDao {
 	}
 
 	@Override
-	public void deletePost(Post post) throws SQLException {
-		// TODO Auto-generated method stub
-		
+	public void deletePost(long postId) throws SQLException {
+		PreparedStatement ps = connection.prepareStatement("DELETE FROM posts WHERE id = ?");
+		ps.setLong(1, postId);
+		ps.close();
 	}
 	//TODO in idao
 	public int getLikesByID(int id) throws SQLException {
 		int likes = 0;
-		String query = "SELECT COUNT(users_id) AS likes FROM users_likes_posts WHERE posts_id = ?";
+		String query = "SELECT COUNT(user_id) AS likes FROM users_likes_posts WHERE post_id = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
@@ -78,7 +79,7 @@ public class PostDao implements IPostDao {
 	}
 
 	public void decreasePostLike(User u, int id) throws SQLException {
-		String query = "DELETE FROM users_likes_posts WHERE users_id = ? AND posts_id = ?";
+		String query = "DELETE FROM users_likes_posts WHERE user_id = ? AND post_id = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
 			ps.setLong(1, u.getId());
 			ps.setInt(2, id);
@@ -86,6 +87,4 @@ public class PostDao implements IPostDao {
 			ps.close();
 		}
 	}
-
-
 }
