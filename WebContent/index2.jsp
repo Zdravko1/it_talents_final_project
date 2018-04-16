@@ -79,7 +79,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
       </div>
       
       <% 
-      	LinkedList<Post> posts = (LinkedList)request.getSession().getAttribute("posts");
+      	LinkedList<Post> posts = (LinkedList)request.getAttribute("posts");
       	if(posts != null){
       	for(Post p : posts){
       %>
