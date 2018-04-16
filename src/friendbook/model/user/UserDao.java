@@ -81,36 +81,6 @@ public class UserDao implements IUserDao {
 
 	}
 
-	@Override
-	public void post(User u, Post post) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void commentToPost(User u, Comment comment, Post post) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void reply(User u, Comment comment, Comment reply) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void likePost(Post post) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void likeComment(Comment comment) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public void loginCheck(String username, String password) throws WrongCredentialsException, SQLException {
 		try (PreparedStatement ps = connection.prepareStatement("SELECT password FROM users WHERE username = ?")) {
 			ps.setString(1, username);
@@ -169,7 +139,7 @@ public class UserDao implements IUserDao {
 	}
 
 	public boolean isPostLiked(User u, int id) throws SQLException {
-		String query = "SELECT * FROM users_likes_posts WHERE users_id = ? AND posts_id = ?";
+		String query = "SELECT * FROM users_likes_posts WHERE user_id = ? AND post_id = ?";
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
 			ps.setLong(1, u.getId());
 			ps.setInt(2, id);

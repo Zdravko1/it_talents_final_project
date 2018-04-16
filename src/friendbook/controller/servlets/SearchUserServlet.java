@@ -1,14 +1,18 @@
-package friendbook.controller;
+package friendbook.controller.servlets;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import friendbook.controller.UserManager;
 import friendbook.model.user.User;
 
 /**
@@ -19,12 +23,13 @@ public class SearchUserServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String name = req.getParameter("name");
+		String name = req.getParameter("user");
+		//cash visited user's object and posts in session
 		try {
 			User u = UserManager.getInstance().getUser(name);
-			req.setAttribute("user", u);
-			req.setAttribute("posts", UserManager.getInstance().getPostsByUserID(u.getId()));
-			req.getRequestDispatcher("userProfile.jsp").forward(req, resp);
+			req.getSession().setAttribute("visitedUser", u);
+			req.getSession().setAttribute("visitedUserPosts", UserManager.getInstance().getPostsByUserID(u.getId()));
+			req.getRequestDispatcher("index2.jsp").forward(req, resp);
 		} catch (SQLException e) {
 			System.out.println("SQL Bug: " + e.getMessage());
 		}

@@ -1,4 +1,4 @@
-package friendbook.controller;
+package friendbook.controller.servlets;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import friendbook.controller.Session;
+import friendbook.controller.UserManager;
 import friendbook.exceptions.ExistingUserException;
 import friendbook.exceptions.ExistingUserNameException;
 import friendbook.exceptions.IncorrectUserNameException;

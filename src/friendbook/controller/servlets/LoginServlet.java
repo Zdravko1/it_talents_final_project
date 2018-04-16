@@ -1,4 +1,4 @@
-package friendbook.controller;
+package friendbook.controller.servlets;
 
 import java.io.IOException;
 import java.util.List;
@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import friendbook.controller.Session;
+import friendbook.controller.UserManager;
 import friendbook.exceptions.WrongCredentialsException;
 import friendbook.model.post.Post;
 import friendbook.model.user.User;
@@ -24,7 +26,7 @@ public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		Session.validateRequestIp(request, response);
-	//	UserManager.getInstance().sessionCheck(request, response);
+//		UserManager.getInstance().sessionCheck(request, response);
 		
 		try {
 			String username = request.getParameter("username");

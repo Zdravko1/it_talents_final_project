@@ -1,4 +1,4 @@
-package friendbook.controller;
+package friendbook.controller.servlets;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import friendbook.controller.PostManager;
+import friendbook.controller.Session;
+import friendbook.controller.UserManager;
 import friendbook.model.post.Post;
 import friendbook.model.post.PostDao;
 import friendbook.model.user.User;
@@ -25,6 +28,7 @@ public class PostServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Session.validateRequestIp(req, resp);
+		UserManager.getInstance().sessionCheck(req, resp);
 		
 		User user = (User)req.getSession().getAttribute("user");
 		Post post = new Post(user, (String)req.getParameter("text"));

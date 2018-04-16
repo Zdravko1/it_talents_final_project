@@ -76,8 +76,13 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
         </div>
       </div>
       
-      <% 
-      	LinkedList<Post> posts = (LinkedList)request.getAttribute("posts");
+      <%
+      LinkedList<Post> posts = new LinkedList();
+      if(request.getSession().getAttribute("visitedUserPosts") == null){
+    	  posts = (LinkedList)request.getSession().getAttribute("visitedUserPosts");
+      } else {
+    	  posts = (LinkedList)request.getAttribute("posts");	   	  
+      }
       	if(posts != null){
       	for(Post p : posts){
       %>

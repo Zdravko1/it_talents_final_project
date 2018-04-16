@@ -41,10 +41,14 @@ public class UserManager {
 			request.getRequestDispatcher("index.html").forward(request, response);
 		}
 		else {
+			//remove visited user's object and name from session when "home" button is pressed
+			session.removeAttribute("visitedUser");
+			session.removeAttribute("visitedUserPosts");
+			//reload user's posts on refresh
 			try {
 				User user = (User) session.getAttribute("user");
 				List<Post> posts = UserManager.getInstance().getPostsByUserID(user.getId());
-				session.setAttribute("posts", posts);
+				request.setAttribute("posts", posts);
 			} catch (SQLException e) {
 				System.out.println("SQL bug: " + e.getMessage());
 			}

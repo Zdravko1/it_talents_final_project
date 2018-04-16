@@ -1,4 +1,4 @@
-package friendbook.controller;
+package friendbook.controller.servlets;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,14 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
+import friendbook.controller.UserManager;
+
 /**
  * Servlet implementation class TestSearchServlet
  */
 @WebServlet("/searchServlet")
 public class AutoCompleteSearchServlet extends HttpServlet {
 
-	protected void doGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
             response.setContentType("application/json");
             try {

@@ -1,4 +1,4 @@
-package friendbook.controller;
+package friendbook.controller.servlets;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -8,14 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class IndexServlet
+ * Servlet implementation class LogOutServlet
  */
-@WebServlet("")
-public class IndexServlet extends HttpServlet {
-	
+@WebServlet("/logout")
+public class LogOutServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		UserManager.getInstance().sessionCheck(req, resp);
+		req.getSession().invalidate();
+		req.getRequestDispatcher("index.html").forward(req, resp);
 	}
 
 }

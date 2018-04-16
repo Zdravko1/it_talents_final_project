@@ -40,7 +40,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
   
   <form action="search" method="post">
   	<button type="submit" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Search</button>
-    <input type="text" id="search" name="name" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">
+    <input type="text" id="search" name="user" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4" required>
   </form>
     
  </div>
@@ -64,7 +64,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
       <div class="w3-card w3-round w3-white">
         <div class="w3-container">
          <h4 class="w3-center">My Profile</h4>
-         <h4 class="w3-center"><%= request.getSession().getAttribute("user") %></h4>
+         <h4 class="w3-center"><%= (request.getSession().getAttribute("visitedUser") != null) ? request.getSession().getAttribute("visitedUser") : request.getSession().getAttribute("user") %></h4>
          <hr>
         </div>
       </div>
@@ -93,13 +93,18 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
       </div>
       
       <% 
-      	LinkedList<Post> posts = (LinkedList)request.getAttribute("posts");
+      LinkedList<Post> posts = new LinkedList();
+      if(request.getSession().getAttribute("visitedUserPosts") != null){
+    	  posts = (LinkedList)request.getSession().getAttribute("visitedUserPosts");
+      } else {
+    	  posts = (LinkedList)request.getAttribute("posts");	   	  
+      }
       	if(posts != null){
       	for(Post p : posts){
       %>
       <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
         <span class="w3-right w3-opacity">1 min</span>
-        <h4><%= request.getSession().getAttribute("user")%></h4><br>
+        <h4><%= (request.getSession().getAttribute("visitedUser") != null) ? request.getSession().getAttribute("visitedUser") : request.getSession().getAttribute("user")	%></h4><br>
         <!-- -=============POST IMAGE================- -->
         <img src="/w3images/avatar2.png" alt="Image" class="w3-left w3-circle w3-margin-right" style="width:60px"> 
         <hr class="w3-clear">
