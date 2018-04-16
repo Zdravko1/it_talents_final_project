@@ -44,7 +44,7 @@ public class UserManager {
 			try {
 				User user = (User) session.getAttribute("user");
 				List<Post> posts = UserManager.getInstance().getPostsByUserID(user.getId());
-				request.setAttribute("posts", posts);
+				session.setAttribute("posts", posts);
 			} catch (SQLException e) {
 				System.out.println("SQL bug: " + e.getMessage());
 			}
