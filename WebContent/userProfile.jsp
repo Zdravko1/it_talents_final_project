@@ -30,8 +30,8 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
   <a href="logout" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Log Out</a>
   
   <form action="search" method="post">
-  	<button type="submit" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Search</button>
-    <input type="text" name="username" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">
+  	<a type="submit" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Search</a>
+    <input type="text" name="first_and_last_name" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">
   </form>
     
  </div>
@@ -54,8 +54,8 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
       <!-- Profile -->
       <div class="w3-card w3-round w3-white">
         <div class="w3-container">
-         <h4 class="w3-center">My Profile</h4>
-         <h4 class="w3-center"><%= request.getSession().getAttribute("user") %></h4>
+         <h4 class="w3-center">Profile</h4>
+         <h4 class="w3-center"><%= request.getAttribute("user") %></h4>
          <hr>
         </div>
       </div>
@@ -71,26 +71,19 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
             <div class="w3-container w3-padding">
-              <h6 class="w3-opacity">Post something</h6>
-              <form action="post" method="post">
-              	 <input contenteditable="true" class="w3-border w3-padding" name="text">
-              	 <br>
-              	 <br>
-              	 <button type="submit" class="w3-button w3-theme"><i class="fa fa-pencil"></i>Post</button> 
-              </form>
             </div>
           </div>
         </div>
       </div>
       
       <% 
-      	LinkedList<Post> posts = (LinkedList)request.getSession().getAttribute("posts");
+      	LinkedList<Post> posts = (LinkedList)request.getAttribute("posts");
       	if(posts != null){
       	for(Post p : posts){
       %>
       <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
         <span class="w3-right w3-opacity">1 min</span>
-        <h4><%= request.getSession().getAttribute("user")%></h4><br>
+        <h4><%= request.getAttribute("user")%></h4><br>
         <!-- -=============POST IMAGE================- -->
         <img src="/w3images/avatar2.png" alt="Image" class="w3-left w3-circle w3-margin-right" style="width:60px"> 
         <hr class="w3-clear">

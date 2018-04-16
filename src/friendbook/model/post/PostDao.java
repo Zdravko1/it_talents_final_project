@@ -54,7 +54,7 @@ public class PostDao implements IPostDao {
 		// TODO Auto-generated method stub
 		
 	}
-
+	//TODO in idao
 	public int getLikesByID(int id) throws SQLException {
 		int likes = 0;
 		String query = "SELECT COUNT(users_id) AS likes FROM users_likes_posts WHERE posts_id = ?";
