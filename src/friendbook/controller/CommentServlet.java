@@ -27,7 +27,7 @@ public class CommentServlet extends HttpServlet {
 		int postId = Integer.parseInt(request.getParameter("currentPost"));
 		Comment comment = new Comment(user, postId, null, request.getParameter("text"));
 		try {
-			CommentManager.getInstance().createComment(comment);
+			CommentManager.getInstance().createComment(comment, request);
 			request.getRequestDispatcher("index2.jsp").forward(request, response);
 		} catch (SQLException e) {
 			System.out.println("SQLBug: " + e.getMessage());
