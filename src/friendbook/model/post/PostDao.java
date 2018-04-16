@@ -55,12 +55,12 @@ public class PostDao implements IPostDao {
 		ps.setLong(1, postId);
 		ps.close();
 	}
-	//TODO in idao
-	public int getLikesByID(int id) throws SQLException {
+
+	public int getLikesByID(long id) throws SQLException {
 		int likes = 0;
 		String query = "SELECT COUNT(user_id) AS likes FROM users_likes_posts WHERE post_id = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
-			ps.setInt(1, id);
+			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			likes = rs.getInt("likes");
@@ -68,21 +68,21 @@ public class PostDao implements IPostDao {
 		return likes;
 	}
 
-	public void increasePostLike(User u, int id) throws SQLException {
+	public void increasePostLike(User u, long id) throws SQLException {
 		String query = "INSERT INTO users_likes_posts VALUES(?,?)";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
-			ps.setInt(1, id);
+			ps.setLong(1, id);
 			ps.setLong(2, u.getId());
 			ps.executeUpdate();
 			ps.close();
 		}
 	}
 
-	public void decreasePostLike(User u, int id) throws SQLException {
+	public void decreasePostLike(User u, long id) throws SQLException {
 		String query = "DELETE FROM users_likes_posts WHERE user_id = ? AND post_id = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
 			ps.setLong(1, u.getId());
-			ps.setInt(2, id);
+			ps.setLong(2, id);
 			ps.executeUpdate();
 			ps.close();
 		}
