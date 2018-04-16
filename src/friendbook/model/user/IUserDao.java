@@ -11,7 +11,7 @@ import friendbook.model.post.Post;
 
 public interface IUserDao {
 
-	User getUserByUsername(String username) throws SQLException;
+	User getUserByNames(String name) throws SQLException;
 	User getByID(long id) throws SQLException;
 	void saveUser(User u) throws SQLException;
 	void post(User u, Post post);

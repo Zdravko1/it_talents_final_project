@@ -15,6 +15,15 @@
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue-grey.css">
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- for search function -->
+<head>
+	<meta charset="ISO-8859-1">
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+	<link rel="stylesheet" 
+	  href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+	<!-- ================ -->
+</head>
 <style>
 html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 </style>
@@ -31,7 +40,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
   
   <form action="search" method="post">
   	<button type="submit" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Search</button>
-    <input type="text" name="username" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">
+    <input type="text" id="search" name="name" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">
   </form>
     
  </div>
@@ -126,6 +135,27 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Open Sans", sans-serif}
 </footer>
  
 <script>
+//search
+$(document).ready(function() {
+    $(function() {
+        $("#search").autocomplete({     
+            source : function(request, response) {
+              $.ajax({
+                   url : "searchServlet",
+                   type : "GET",
+                   data : {
+                          term : request.term
+                   },
+                   dataType : "json",
+                   success : function(data) {
+                         response(data);
+                   }
+            });
+         }
+     });
+  });
+});
+
 // Accordion
 function myFunction(id) {
     var x = document.getElementById(id);

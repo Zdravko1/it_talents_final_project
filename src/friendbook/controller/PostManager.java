@@ -3,6 +3,7 @@ package friendbook.controller;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import friendbook.model.post.Post;
@@ -27,12 +28,12 @@ public class PostManager {
 		return instance;
 	}
 	
-	public void addPost(Post post, HttpSession session) throws SQLException {
+	public void addPost(Post post, HttpServletRequest request) throws SQLException {
 		PostDao.getInstance().addPost(post);
-		if(session.getAttribute("posts") != null) {
-			LinkedList<Post> posts = (LinkedList)session.getAttribute("posts");
+		if(request.getAttribute("posts") != null) {
+			LinkedList<Post> posts = (LinkedList)request.getAttribute("posts");
 			posts.addFirst(post);
-			session.setAttribute("posts", posts);
+			request.setAttribute("posts", posts);
 		}
 	}
 	

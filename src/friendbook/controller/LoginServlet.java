@@ -31,11 +31,11 @@ public class LoginServlet extends HttpServlet {
 			String password = request.getParameter("pass");
 			if(UserManager.getInstance().login(username, password)) {
 				HttpSession session = request.getSession();
-				User user = UserManager.getInstance().getUser(username);
-				//get user's posts and put them in his session
+				User user = UserManager.getInstance().getUserByUsername(username);
+				//get user's posts and put them in request
 				List<Post> posts = UserManager.getInstance().getPostsByUserID(user.getId());
 				session.setAttribute("user", user);
-				session.setAttribute("posts", posts);
+				request.setAttribute("posts", posts);
 				request.getRequestDispatcher("index2.jsp").forward(request, response);
 			}
 			else {

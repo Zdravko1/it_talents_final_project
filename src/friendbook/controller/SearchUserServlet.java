@@ -19,9 +19,9 @@ public class SearchUserServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String username = req.getParameter("username");
+		String name = req.getParameter("name");
 		try {
-			User u = UserManager.getInstance().getUser(username);
+			User u = UserManager.getInstance().getUser(name);
 			req.setAttribute("user", u);
 			req.setAttribute("posts", UserManager.getInstance().getPostsByUserID(u.getId()));
 			req.getRequestDispatcher("userProfile.jsp").forward(req, resp);

@@ -79,8 +79,8 @@ public class UserManager {
 		return UserDao.getInstance().getByID(id);
 	}
 	
-	public User getUser(String username) throws SQLException {
-		return UserDao.getInstance().getUserByUsername(username);
+	public User getUser(String name) throws SQLException {
+		return UserDao.getInstance().getUserByNames(name);
 	}
 
 	public List<Post> getPostsByUserID(long id) throws SQLException {
@@ -89,6 +89,14 @@ public class UserManager {
 
 	public boolean isPostLiked(User u, int id) throws SQLException {
 		return UserDao.getInstance().isPostLiked(u, id);
+	}
+	
+	public List<String> getUsersNamesStartingWith(String term) throws SQLException{
+		return UserDao.getInstance().getUsersNamesStartingWith(term);
+	}
+
+	public User getUserByUsername(String username) throws SQLException {
+		return UserDao.getInstance().getUserByUsername(username);
 	}
 	
 }

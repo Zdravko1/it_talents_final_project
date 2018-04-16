@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,10 +36,10 @@ public class UserDao implements IUserDao{
 	}
 	
 	@Override
-	public User getUserByUsername(String username) throws SQLException {
-		String query = "SELECT id, username, password, email, first_name, last_name FROM users WHERE username = ?";
+	public User getUserByNames(String name) throws SQLException {
+		String query = "SELECT id, username, password, email, first_name, last_name FROM users WHERE CONCAT(first_name,' ', last_name) = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
-			ps.setString(1, username);
+			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			User u = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("first_name"), rs.getString("last_name"));
@@ -173,6 +174,32 @@ public class UserDao implements IUserDao{
 			}
 		}
 		return false;
+	}
+
+	public List<String> getUsersNamesStartingWith(String term) throws SQLException {
+		List<String> names = new ArrayList<>();
+		String query = "SELECT concat(first_name,' ', last_name) AS name FROM users WHERE Concat(first_name, ' ', last_name) LIKE ?";
+		try(PreparedStatement ps = connection.prepareStatement(query)){
+			ps.setString(1, term + "%");
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				names.add(rs.getString("name"));
+			}
+			ps.close();
+		}
+		return names;
+	}
+
+	public User getUserByUsername(String username) throws SQLException {
+		String query = "SELECT * FROM users WHERE username = ?";
+		try(PreparedStatement ps = connection.prepareStatement(query)){
+			ps.setString(1, username);
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			User u = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("first_name"), rs.getString("last_name"));
+			ps.close();
+			return u;
+		}
 	}
 
 }
