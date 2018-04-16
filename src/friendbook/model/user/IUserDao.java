@@ -18,4 +18,5 @@ public interface IUserDao {
 	void existingUserCheck(String username, String email) throws SQLException, ExistingUserException;
 	void loginCheck(String username, String password) throws WrongCredentialsException, SQLException;
 	List<Post> getPostsByUserID(long id) throws SQLException;
+	public void followUser(User user, long followedId) throws SQLException;
 }

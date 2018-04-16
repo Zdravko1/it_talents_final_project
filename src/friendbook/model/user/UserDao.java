@@ -80,6 +80,16 @@ public class UserDao implements IUserDao {
 		}
 
 	}
+	
+	public void followUser(User user, long followedId) throws SQLException {
+		try (PreparedStatement ps = connection.prepareStatement(
+				"INSERT INTO users_has_users (user_id, user_id_follower) VALUES (?,?)")) {	
+			ps.setLong(1, user.getId());
+			ps.setLong(2, followedId);
+			ps.executeUpdate();
+			ps.close();
+		}
+	}
 
 	public void loginCheck(String username, String password) throws WrongCredentialsException, SQLException {
 		try (PreparedStatement ps = connection.prepareStatement("SELECT password FROM users WHERE username = ?")) {

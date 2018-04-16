@@ -1,8 +1,10 @@
 package friendbook.controller;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedList;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import friendbook.model.comment.Comment;
@@ -33,8 +35,26 @@ public class CommentManager {
 		CommentDao.getInstance().changeComment(comment);
 	}
 
-	public void createComment(Comment comment) throws SQLException {
+	@SuppressWarnings("unchecked")
+	public void createComment(Comment comment, HttpServletRequest request) throws SQLException {
+		//TODO check if working
 		CommentDao.getInstance().addComment(comment.getUser() ,comment);
+		HashMap<Long, LinkedList<Comment>> posts = null;
+		if(request.getAttribute("comments") == null) {
+			// postId -> comment
+			posts = new HashMap<>();	
+		} else {
+			posts = (HashMap<Long, LinkedList<Comment>>)request.getAttribute("comments");
+			
+		}
+		if(!posts.containsKey(comment.getPost())) {
+			LinkedList<Comment> comments = new LinkedList<>();
+			comments.addFirst(comment);
+			posts.put(comment.getPost(),comments);
+		} else {
+			posts.get(comment.getPost()).addFirst(comment);
+		}
+		request.setAttribute("posts", posts);
 	}
 
 	public void deleteComment(long commentId) throws SQLException {

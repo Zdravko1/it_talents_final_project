@@ -43,8 +43,7 @@ public class LoginServlet extends HttpServlet {
 			else {
  			    response.getWriter().write("Wrong username and/or password.");
 			}
-		} catch (WrongCredentialsException e) {
-			response.getWriter().write(e.getMessage());
+		
 		} catch (Exception e) {
 			response.getWriter().write("Some error occured: " + e.getMessage());
 		}

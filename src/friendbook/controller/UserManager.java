@@ -56,6 +56,8 @@ public class UserManager {
 		}
 	}
 	
+	
+	
 	public boolean login(String username, String password) throws SQLException, WrongCredentialsException {
 		try {
 			UserDao.getInstance().loginCheck(username, password);
@@ -101,6 +103,10 @@ public class UserManager {
 
 	public User getUserByUsername(String username) throws SQLException {
 		return UserDao.getInstance().getUserByUsername(username);
+	}
+
+	public void follow(User user, long followedId) throws SQLException {
+		UserDao.getInstance().followUser(user, followedId);
 	}
 	
 }
