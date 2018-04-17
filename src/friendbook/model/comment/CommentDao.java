@@ -6,9 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import friendbook.model.post.Post;
 import friendbook.model.user.DBManager;
 import friendbook.model.user.User;
-
 
 public class CommentDao implements ICommentDao {
 
@@ -33,26 +33,26 @@ public class CommentDao implements ICommentDao {
 	@Override
 	public void likeComment(User user, Comment comment) throws SQLException {
 		// TODO check if working
-		PreparedStatement ps = connection
-				.prepareStatement("INSERT INTO users_likes_comments (users_id, comments_id) VALUES (?,?)");
-		ps.setLong(1, user.getId());
-		ps.setLong(2, comment.getId());
-		ps.executeUpdate();
-		ps.close();
-	}
-	
-	@Override
-	public void removeLike(User user, Comment comment) throws SQLException {
-		PreparedStatement ps = connection
-				.prepareStatement("DELETE FROM users_likes_comments WHERE users_id = ? AND comments_id = ?");
-		ps.setLong(1, user.getId());
-		ps.setLong(2, comment.getId());
-		ps.executeUpdate();
-		ps.close();	
+		try (PreparedStatement ps = connection
+				.prepareStatement("INSERT INTO users_likes_comments (users_id, comments_id) VALUES (?,?)")) {
+			ps.setLong(1, user.getId());
+			ps.setLong(2, comment.getId());
+			ps.executeUpdate();
+		}
 	}
 
 	@Override
-	public void addComment(User user, Comment comment) throws SQLException {
+	public void removeLike(User user, Comment comment) throws SQLException {
+		try (PreparedStatement ps = connection
+				.prepareStatement("DELETE FROM users_likes_comments WHERE users_id = ? AND comments_id = ?")) {
+			ps.setLong(1, user.getId());
+			ps.setLong(2, comment.getId());
+			ps.executeUpdate();
+		}
+	}
+
+	@Override
+	public void addComment(long userId, Comment comment) throws SQLException {
 		String query;
 		boolean isParentless = comment.getParentComment() == null;
 		if (isParentless) {
@@ -60,49 +60,65 @@ public class CommentDao implements ICommentDao {
 		} else {
 			query = "INSERT INTO comments (text, post_id, parent_id, user_id) VALUES (?,?,?,?)";
 		}
-		PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-		statement.setString(1, comment.getText());
-		statement.setLong(2, comment.getPost());
-		if (!isParentless) {
-			statement.setLong(3, comment.getParentComment().getId());
-			statement.setLong(4, user.getId());
+		try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+			statement.setString(1, comment.getText());
+			statement.setLong(2, comment.getPost());
+			if (!isParentless) {
+				statement.setLong(3, comment.getParentComment());
+				statement.setLong(4, userId);
+			}
+			statement.setLong(3, userId);
+			statement.executeUpdate();
+			ResultSet rs = statement.getGeneratedKeys();
+			rs.next();
+			comment.setId(rs.getLong(1));
 		}
-		statement.setLong(3, user.getId());
-		statement.executeUpdate();
-		ResultSet rs = statement.getGeneratedKeys();
-		rs.next();
-		comment.setId(rs.getLong(1));
-		statement.close();
+		System.out.println("Added comment");
+	}
+	
+
+	@Override
+	public void getAllCommentsOfGivenPost(Post post) throws SQLException {
+		try (PreparedStatement ps = connection
+				.prepareStatement("SELECT id, text, date, parent_id, user_id FROM comments WHERE post_id = ?")) {
+			ps.setLong(1, post.getId());
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				post.addComment(new Comment(rs.getLong("user_id"), post.getId(), rs.getLong("parent_id"),
+						rs.getString("text")));
+			}
+		}
 	}
 
 	@Override
 	public void deleteComment(long commentId) throws SQLException {
-		PreparedStatement statement = connection.prepareStatement("DELETE FROM comments WHERE id = ?");
-		statement.setLong(1, commentId);
-		statement.executeUpdate();
-		statement.close();
+		try (PreparedStatement statement = connection.prepareStatement("DELETE FROM comments WHERE id = ?")) {
+			statement.setLong(1, commentId);
+			statement.executeUpdate();
+		}
 	}
 
 	@Override
 	public void changeComment(Comment comment) throws SQLException {
-		PreparedStatement statement = connection.prepareStatement("UPDATE comments SET text = ? WHERE id = ?");
-		statement.setString(1, comment.getText());
-		statement.setLong(2, comment.getId());
-		statement.executeUpdate();
-		statement.close();
+		try (PreparedStatement statement = connection.prepareStatement("UPDATE comments SET text = ? WHERE id = ?")) {
+			statement.setString(1, comment.getText());
+			statement.setLong(2, comment.getId());
+			statement.executeUpdate();
+		}
 	}
 
 	public boolean checkIfAlreadyLiked(User user, Comment comment) throws SQLException {
 		// TODO check if working
-		PreparedStatement ps = connection.prepareStatement("SELECT users_id, comments_id FROM users_likes_comments WHERE users_id = ? AND comments_id = ?");
-		ps.setLong(1, user.getId());
-		ps.setLong(2, comment.getId());
-		ResultSet rs = ps.executeQuery();
+		try (PreparedStatement ps = connection.prepareStatement(
+				"SELECT users_id, comments_id FROM users_likes_comments WHERE users_id = ? AND comments_id = ?")) {
+			ps.setLong(1, user.getId());
+			ps.setLong(2, comment.getId());
+			ResultSet rs = ps.executeQuery();
 
-		if (rs.next()) {
-			return true;
+			if (rs.next()) {
+				return true;
+			}
 		}
-		ps.close();
 		return false;
 	}
 }

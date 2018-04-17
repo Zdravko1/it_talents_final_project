@@ -2,7 +2,12 @@ package friendbook.model.post;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
+import friendbook.model.comment.Comment;
 import friendbook.model.user.User;
 
 public class Post implements Serializable{
@@ -12,7 +17,7 @@ public class Post implements Serializable{
 	private User user;
 	private String imagePath;
 	private int likes;
-	private Date date;
+	private List<Comment> comments = new ArrayList<>();
 	
 	//for testing purposes
 	public Post(User user, String text) {
@@ -20,7 +25,7 @@ public class Post implements Serializable{
 		setText(text);
 	}
 	
-	public Post(int id, User user, String text) {
+	public Post(long id, User user, String text) {
 		this(user, text);
 		this.id = id;
 	}
@@ -32,11 +37,10 @@ public class Post implements Serializable{
 		this.imagePath = imagePath;
 	}
 
-	public Post(int id, String imagePath, String text, Date date, User user) {
+	public Post(long id, String imagePath, String text, Date date, User user) {
 		this.id = id;
 		this.imagePath = imagePath;
 		this.text = text;
-		this.date = date;
 		this.user = user;
 	}
 
@@ -45,6 +49,10 @@ public class Post implements Serializable{
 			throw new IllegalArgumentException("Invalid comment");
 		}
 		this.text = text;
+	}
+	
+	public void addComment(Comment comment) {
+		this.comments.add(comment);
 	}
 	
 	public User getUser() {
@@ -63,6 +71,10 @@ public class Post implements Serializable{
 		return likes;
 	}
 	
+	public List<Comment> getComments() {
+		return Collections.unmodifiableList(this.comments);
+	}
+	
 	public void setLikes(int likes) {
 		if(likes > 0) {
 			this.likes = likes;
@@ -75,5 +87,10 @@ public class Post implements Serializable{
 	
 	public String getText() {
 		return text;
+	}
+	
+	@Override
+	public String toString() {
+		return id + " " + text;
 	}
 }
