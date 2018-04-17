@@ -28,10 +28,11 @@ public class CommentServlet extends HttpServlet {
 		HttpSession s = request.getSession();
 		User user = (User) s.getAttribute("user");
 		long postId = Long.parseLong(request.getParameter("currentPost"));
-		Comment comment = new Comment(user, postId, null, request.getParameter("text"));
+		Comment comment = new Comment(user.getId(), postId, null, request.getParameter("text"));
+		
 		try {
-			CommentManager.getInstance().createComment(comment, request);
-			request.getRequestDispatcher("index2.jsp").forward(request, response);
+			CommentManager.getInstance().createComment(comment);
+			response.sendRedirect("index2.jsp");
 		} catch (SQLException e) {
 			System.out.println("SQLBug: " + e.getMessage());
 		} catch (Exception e) {

@@ -14,6 +14,7 @@ import friendbook.exceptions.ExistingUserException;
 import friendbook.exceptions.ExistingUserNameException;
 import friendbook.exceptions.WrongCredentialsException;
 import friendbook.model.comment.Comment;
+import friendbook.model.comment.CommentDao;
 import friendbook.model.post.Post;
 import friendbook.model.post.PostDao;
 
@@ -77,7 +78,6 @@ public class UserDao implements IUserDao {
 			ps.setString(4, u.getFirstName());
 			ps.setString(5, u.getLastName());
 			ps.executeUpdate();
-			ps.close();
 		}
 
 	}
@@ -89,7 +89,6 @@ public class UserDao implements IUserDao {
 			ps.setLong(1, followedId);
 			ps.setLong(2, user.getId());
 			ps.executeUpdate();
-			ps.close();
 		}
 	}
 	
@@ -102,7 +101,6 @@ public class UserDao implements IUserDao {
 			if (!rs.next() || !BCrypt.checkpw(password, rs.getString("password"))) {
 				throw new WrongCredentialsException();
 			}
-			ps.close();
 		}
 	}
 
@@ -117,7 +115,6 @@ public class UserDao implements IUserDao {
 			if (rs.next()) {
 				throw new ExistingUserException();
 			}
-			ps.close();
 		}
 	}
 
@@ -130,7 +127,6 @@ public class UserDao implements IUserDao {
 			if (rs.next()) {
 				throw new ExistingUserNameException();
 			}
-			ps.close();
 		}
 	}
 
@@ -145,12 +141,13 @@ public class UserDao implements IUserDao {
 			while (rs.next()) {
 				Post p = new Post(rs.getInt("id"), u, rs.getString("description"));
 				p.setLikes(PostManager.getInstance().getLikes(rs.getInt("id")));
+				CommentDao.getInstance().getAllCommentsOfGivenPost(p);
 				posts.addLast(p);
 			}
-			ps.close();
 		}
 		return posts;
 	}
+	
 	
 	@Override
 	public boolean isPostLiked(User u, int id) throws SQLException {
@@ -177,7 +174,6 @@ public class UserDao implements IUserDao {
 			while(rs.next()) {
 				names.add(rs.getString("name"));
 			}
-			ps.close();
 		}
 		return names;
 	}
@@ -190,7 +186,6 @@ public class UserDao implements IUserDao {
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			User u = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("first_name"), rs.getString("last_name"));
-			ps.close();
 			return u;
 		}
 	}
@@ -225,7 +220,6 @@ public class UserDao implements IUserDao {
 				ps.close();
 				return true;
 			}
-			ps.close();
 		}
 		return false;
 	}

@@ -1,3 +1,5 @@
+<%@page import="friendbook.model.comment.Comment"%>
+<%@page import="java.util.List"%>
 <%@page import="java.util.LinkedList"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.HashSet"%>
@@ -126,8 +128,23 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
 	   <form method="post" action="like">
 	      <input type="hidden" name="like" value="<%= p.getId()%>">
 	      <button type="submit" class="w3-button w3-theme-d1 w3-margin-bottom" ><i class="fa fa-thumbs-up"></i>Like</button><%= p.getLikes() %>
-	      
       </form>
+      
+          <% 
+   		List<Comment> comments = p.getComments();
+    if(comments != null){
+    	for(Comment c : comments) {
+      %>
+      <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+        <span class="w3-right w3-opacity">1 min</span>
+        <h4><%= c.getUserId() %></h4><br>
+        
+        <p><%= c.getText()  %></p>
+          <div class="w3-row-padding" style="margin:0 -16px">
+	  </div>
+      <%}} %>
+      
+      
       <form action="comment" method="post">
               	 <input contenteditable="true" class="w3-border w3-padding" name="text">
               	  <input type="hidden" name="currentPost" value="<%= p.getId()%>">

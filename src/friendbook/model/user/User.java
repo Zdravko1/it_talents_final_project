@@ -1,7 +1,10 @@
 package friendbook.model.user;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import friendbook.exceptions.ExistingUserNameException;
@@ -27,9 +30,8 @@ public class User {
 	private boolean isFollowed; //using it to show/hide follow button, will remove later if i find better way to do it.
 	
 	private Set<User> following; //users who are followed by this user
-	private Set<Post> posts;
-	
-	
+	private List<Post> posts = new ArrayList<>();
+
 	//TODO change later
 	public User() {
 	}
@@ -68,6 +70,10 @@ public class User {
 	public String getLastName() {
 		return lastName;
 	}
+	
+	public LinkedList<Post> getPosts() {
+		return (LinkedList<Post>) Collections.unmodifiableList(this.posts);
+	}
 
 	public int getFollowers() {
 		return followers;
@@ -81,10 +87,6 @@ public class User {
 		return id;
 	}
 	
-	public Set<Post> getPosts(){
-		return Collections.unmodifiableSet(this.posts);
-	}
-	
 	public boolean isFollowed() {
 		return isFollowed;
 	}
@@ -93,12 +95,6 @@ public class User {
 	public void setId(long id) {
 		if(id > 0){
 			this.id = id;
-		}
-	}
-	
-	public void setPosts(Set<Post> posts) {
-		if(posts != null) {
-			this.posts = posts;
 		}
 	}
 	
@@ -172,5 +168,9 @@ public class User {
 	@Override
 	public String toString() {
 		return firstName + " " + lastName;
+	}
+
+	public void addPost(Post post) {
+		this.posts.add(post);
 	}
 }

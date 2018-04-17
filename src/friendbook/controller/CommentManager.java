@@ -35,26 +35,10 @@ public class CommentManager {
 		CommentDao.getInstance().changeComment(comment);
 	}
 
-	@SuppressWarnings("unchecked")
-	public void createComment(Comment comment, HttpServletRequest request) throws SQLException {
+	
+	public void createComment(Comment comment) throws SQLException {
 		//TODO check if working
-		CommentDao.getInstance().addComment(comment.getUser() ,comment);
-		HashMap<Long, LinkedList<Comment>> posts = null;
-		if(request.getAttribute("comments") == null) {
-			// postId -> comment
-			posts = new HashMap<>();	
-		} else {
-			posts = (HashMap<Long, LinkedList<Comment>>)request.getAttribute("comments");
-			
-		}
-		if(!posts.containsKey(comment.getPost())) {
-			LinkedList<Comment> comments = new LinkedList<>();
-			comments.addFirst(comment);
-			posts.put(comment.getPost(),comments);
-		} else {
-			posts.get(comment.getPost()).addFirst(comment);
-		}
-		request.setAttribute("posts", posts);
+		CommentDao.getInstance().addComment(comment.getUserId() ,comment);
 	}
 
 	public void deleteComment(long commentId) throws SQLException {

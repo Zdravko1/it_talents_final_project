@@ -7,12 +7,12 @@ public class Comment {
 
 	private long id;
 	private String text;
-	private User user;
+	private long userId;
 	private long postId;
-	private Comment parentComment;
+	private Long parentComment;
 	
-	public Comment(User user, long postId, Comment parentComment, String text) {
-		this.user = user;
+	public Comment(long userId, long postId, Long parentComment, String text) {
+		this.userId = userId;
 		this.postId = postId;
 		this.parentComment = parentComment;
 		setText(text);
@@ -20,7 +20,7 @@ public class Comment {
 	
 	private void setText(String text) {
 		if (text == null || text.trim().isEmpty()) {
-			throw new IllegalArgumentException("Invalid comment");
+			throw new IllegalArgumentException("Comment cannot be empty!");
 		}
 		this.text = text;
 	}
@@ -29,12 +29,12 @@ public class Comment {
 		return postId;
 	}
 	
-	public Comment getParentComment() {
+	public Long getParentComment() {
 		return parentComment;
 	}
 	
-	public User getUser() {
-		return user;
+	public long getUserId() {
+		return userId;
 	}
 	
 	public long getId() {
