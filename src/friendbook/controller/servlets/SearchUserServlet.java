@@ -28,7 +28,9 @@ public class SearchUserServlet extends HttpServlet {
 		//cash visited user's object and posts in session
 		try {
 			User u = UserManager.getInstance().getUser(name);
-			if(UserManager.getInstance().isFollower(user, u.getId())) {
+			//if the searched user is followed already put a flag and change the follow button to followed in jsp
+			//or if this is the same user
+			if(UserManager.getInstance().isFollower(user, u.getId()) || user.getId() == u.getId()) {
 				u.setFollowed(true);
 			}
 			req.getSession().setAttribute("visitedUser", u);

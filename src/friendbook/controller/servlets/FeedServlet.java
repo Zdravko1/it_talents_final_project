@@ -22,9 +22,7 @@ public class FeedServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//TODO delete
 		UserManager.getInstance().sessionCheck(req, resp);
-		
 	}
 	
 	@Override
