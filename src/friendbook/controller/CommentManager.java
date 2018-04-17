@@ -45,7 +45,17 @@ public class CommentManager {
 		CommentDao.getInstance().deleteComment(commentId);
 	}
 	
-	public void addPost(Post post, HttpSession session) throws SQLException {
-		
+	public boolean isCommentLiked(Long userId, Long commentId) throws SQLException {
+		return CommentDao.getInstance().checkIfAlreadyLiked(userId, commentId);
+	}
+
+
+	public void decreaseCommentLikes(long id, long commentId) throws SQLException {
+		CommentDao.getInstance().removeLike(id, commentId);
+	}
+
+
+	public void increaseCommentLikes(long userId, long commentId) throws SQLException{
+		CommentDao.getInstance().likeComment(userId, commentId);
 	}
 }

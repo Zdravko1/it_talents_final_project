@@ -17,12 +17,19 @@ public class Comment {
 	private Long parentComment;
 	private LocalDateTime date;
 	private List<Comment> comments = new ArrayList<>();
+	private int likes;
+
 	
 	public Comment(long userId, long postId, Long parentComment, String text) {
 		this.userId = userId;
 		this.postId = postId;
 		this.parentComment = parentComment;
 		setText(text);
+	}
+	
+	public Comment(long id, long userId, long postId, Long parentComment, String text) {
+		this(userId, postId, parentComment, text);
+		this.id = id;
 	}
 	
 	void setDate(LocalDateTime date) {
@@ -32,6 +39,7 @@ public class Comment {
 	public LocalDateTime getDate() {
 		return date;
 	}
+	
 	
 	private void setText(String text) {
 		if (text == null || text.trim().isEmpty()) {
@@ -62,6 +70,16 @@ public class Comment {
 	
 	public long getId() {
 		return id;
+	}
+	
+	public int getLikes() {
+		return likes;
+	}
+	
+	public void setLikes(int likes) {
+		if(likes > 0) {
+			this.likes = likes;
+		}
 	}
 	
 	public void setId(long id) {

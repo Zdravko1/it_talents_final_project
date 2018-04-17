@@ -13,13 +13,16 @@ public interface ICommentDao {
 
 	void changeComment(Comment comment) throws SQLException;
 
-	void likeComment(User user, Comment comment) throws SQLException;
-	
-	void removeLike(User user, Comment comment) throws SQLException;
-	
-	boolean checkIfAlreadyLiked(User user, Comment comment) throws SQLException;
-	
 	void getAndSetAllCommentsOfGivenPost(Post post) throws SQLException;
-	
+
 	void getCommentsOfParentComment(Comment comment) throws SQLException;
+
+	int getLikesByID(long id) throws Exception;
+
+	void removeLike(long userId, long commentId) throws SQLException;
+
+	boolean checkIfAlreadyLiked(long userId, long commentId) throws SQLException;
+
+	void likeComment(long userId, long commentId) throws SQLException;
+
 }
