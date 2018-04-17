@@ -1,12 +1,37 @@
-<%@page import="friendbook.model.user.UserDao"%>
-<%@page import="friendbook.controller.UserManager"%>
+<%@page import="friendbook.model.post.Post"%>
+<%@page import="java.util.LinkedList"%>
 <%@page import="friendbook.model.comment.Comment"%>
 <%@page import="java.util.List"%>
-<%@ include file="index2part1.jsp"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+
+<div class="w3-col m7">
+    
+      <div class="w3-row-padding"">
+        <div class="w3-col m12">
+          <div class="w3-card w3-round w3-white">
+            <div class="w3-container w3-padding">
+              <h6 class="w3-opacity">Post something</h6>
+              <form action="post" method="post">
+              	 <input contenteditable="true" class="w3-border w3-padding" name="text">
+              	 <br>
+              	 <br>
+              	 <button type="submit" class="w3-button w3-theme"><i class="fa fa-pencil"></i>Post</button> 
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
       
-      
- <% 
-      	ArrayList<Post> posts = visit ? (ArrayList)request.getSession().getAttribute("visitedUserPosts") : (ArrayList)request.getSession().getAttribute("feed");
+      <% 
+      	LinkedList<Post> posts = (LinkedList)request.getAttribute("posts");
       	if(posts != null){
       	for(Post p : posts){
       %>
@@ -24,32 +49,18 @@
 	      <button type="submit" class="w3-button w3-theme-d1 w3-margin-bottom" ><i class="fa fa-thumbs-up"></i>Like</button><%= p.getLikes() %>
       </form>
       
-     <% 
+          <% 
    		List<Comment> comments = p.getComments();
-   		 if(comments != null){
+    if(comments != null){
     	for(Comment c : comments) {
       %>
       <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
         <span class="w3-right w3-opacity">1 min</span>
-        <h4><%= UserDao.getInstance().getByID(c.getUserId()) %></h4><br>
+        <h4><%= c.getUserId() %></h4><br>
         
         <p><%= c.getText()  %></p>
-      
-         <% 
-   		List<Comment> childComments = c.getComments();
-   		 if(childComments != null){
-    	for(Comment childC : childComments) {
-      %>
-      <div class="w3-container w3-card w3-white w3-round w3-margin">
-        <span class="w3-right w3-opacity">1 min</span>
-        <h4><%= UserDao.getInstance().getByID(childC.getUserId()) %></h4>
-        <p><%= childC.getText()  %></p>
+          <div class="w3-row-padding" style="margin:0 -16px">
 	  </div>
-
-      <%}} %>
-        
-	  </div>
-	  
       <%}} %>
       
       
@@ -61,5 +72,10 @@
               </form>
          </div> 
       <%}} %>
-
-<%@ include file="index2part2.jsp"%>
+    <!-- End Middle Column -->
+    </div>
+    
+  <!-- End Grid -->
+  </div>
+</body>
+</html>
