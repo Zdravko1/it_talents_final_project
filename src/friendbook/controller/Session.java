@@ -16,7 +16,7 @@ public class Session {
 		} else {
 			if (session.getAttribute("ip") != req.getRemoteAddr()) {
 				session.invalidate();
-				req.getRequestDispatcher("index2.html").forward(req, resp);
+				req.getRequestDispatcher("index2.jsp").forward(req, resp);
 			}
 		}
 	}

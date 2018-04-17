@@ -26,8 +26,10 @@ public class FollowUserServlet extends HttpServlet {
 		try {
 			UserManager.getInstance().follow(user, followedId);
 			System.out.println("followed someone");
+			req.getRequestDispatcher("index2.jsp").forward(req, resp);
 		} catch (Exception e) {
 			// TODO: handle exception
+			System.out.println("Bug: " + e.getMessage());
 		}
 	}
 	

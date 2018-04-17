@@ -19,5 +19,5 @@ public interface ICommentDao {
 	
 	boolean checkIfAlreadyLiked(User user, Comment comment) throws SQLException;
 	
-	void getAllCommentsOfGivenPost(Post post) throws SQLException;
+	void getAndSetAllCommentsOfGivenPost(Post post) throws SQLException;
 }

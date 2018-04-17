@@ -97,7 +97,6 @@ public class UserDao implements IUserDao {
 		try (PreparedStatement ps = connection.prepareStatement("SELECT password FROM users WHERE username = ?")) {
 			ps.setString(1, username);
 			ResultSet rs = ps.executeQuery();
-			
 			if (!rs.next() || !BCrypt.checkpw(password, rs.getString("password"))) {
 				throw new WrongCredentialsException();
 			}
@@ -132,7 +131,7 @@ public class UserDao implements IUserDao {
 
 	@Override
 	public List<Post> getPostsByUserID(long id) throws SQLException {
-		LinkedList<Post> posts = new LinkedList<>();
+		ArrayList<Post> posts = new ArrayList<>();
 		String query = "SELECT id, description FROM posts WHERE user_id = ? ORDER BY date DESC";
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
 			ps.setLong(1, id);
@@ -140,9 +139,9 @@ public class UserDao implements IUserDao {
 			User u = UserDao.getInstance().getByID(id);
 			while (rs.next()) {
 				Post p = new Post(rs.getInt("id"), u, rs.getString("description"));
-				p.setLikes(PostManager.getInstance().getLikes(rs.getInt("id")));
-				CommentDao.getInstance().getAllCommentsOfGivenPost(p);
-				posts.addLast(p);
+				p.setLikes(PostManager.getInstance().getLikes(p.getId()));
+				CommentDao.getInstance().getAndSetAllCommentsOfGivenPost(p);
+				posts.add(p);
 			}
 		}
 		return posts;
@@ -201,7 +200,7 @@ public class UserDao implements IUserDao {
 				User u = getByID(rs.getInt("user_id"));
 				Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), rs.getDate("date"), u);
 				p.setLikes(PostManager.getInstance().getLikes(p.getId()));
-				p.setLikes(PostManager.getInstance().getLikes(rs.getInt("id")));
+				CommentDao.getInstance().getAndSetAllCommentsOfGivenPost(p);
 				feed.add(p);
 			}
 		}

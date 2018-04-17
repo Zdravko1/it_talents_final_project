@@ -40,7 +40,7 @@ public class UserManager {
 		HttpSession session = request.getSession();
 		if(session.isNew() || session.getAttribute("user") == null) {
 			System.out.println("vliza v if-a");
-			request.getRequestDispatcher("index.html").forward(request, response);
+			request.getRequestDispatcher("login.jsp").forward(request, response);
 		}
 		else {
 			//remove visited user's object and name from session when "home" button is pressed

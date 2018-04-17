@@ -13,6 +13,7 @@ public interface IUserDao {
 	void existingUserNameCheck(String username) throws Exception;
 	void existingUserCheck(String username, String email) throws Exception;
 	void loginCheck(String username, String password) throws Exception;
+	//TODO Delete, ima go i v postdao, i mai tam e po dobre
 	List<Post> getPostsByUserID(long id) throws Exception;
 	void followUser(User user, long followedId) throws Exception;
 	ArrayList<Post> getUserFeedByID(long id) throws Exception;

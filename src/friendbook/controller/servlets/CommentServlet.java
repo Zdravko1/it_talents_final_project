@@ -32,7 +32,11 @@ public class CommentServlet extends HttpServlet {
 		
 		try {
 			CommentManager.getInstance().createComment(comment);
-			response.sendRedirect("index2.jsp");
+			if(s.getAttribute("feed") != null || s.getAttribute("visitedUser") != null) {
+				request.getRequestDispatcher("index.jsp").forward(request, response);
+				return;
+			}
+			request.getRequestDispatcher("index2.jsp").forward(request, response);
 		} catch (SQLException e) {
 			System.out.println("SQLBug: " + e.getMessage());
 		} catch (Exception e) {

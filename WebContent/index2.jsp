@@ -40,7 +40,7 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
 <div class="w3-top">
  <div class="w3-bar w3-theme-d2 w3-left-align w3-large">
   <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
-  	<a href="" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>Home</a>
+  	<a href="http://localhost:8080/Friendbook.bg/" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>Home</a>
   <a href="feed" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="News"><i class="fa fa-globe"></i></a>
   <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="My Account"><i class="fa fa-user"></i></a>
   <a href="logout" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Log Out</a>
@@ -112,7 +112,7 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
       </div>
       
       <% 
-      	LinkedList<Post> posts = visit ? (LinkedList)request.getSession().getAttribute("visitedUserPosts") : (LinkedList)request.getAttribute("posts");
+        ArrayList<Post> posts = visit ? (ArrayList)request.getSession().getAttribute("visitedUserPosts") : (ArrayList)request.getAttribute("posts");
       	if(posts != null){
       	for(Post p : posts){
       %>
@@ -130,9 +130,9 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
 	      <button type="submit" class="w3-button w3-theme-d1 w3-margin-bottom" ><i class="fa fa-thumbs-up"></i>Like</button><%= p.getLikes() %>
       </form>
       
-          <% 
+     <% 
    		List<Comment> comments = p.getComments();
-    if(comments != null){
+   		 if(comments != null){
     	for(Comment c : comments) {
       %>
       <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
@@ -140,7 +140,6 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
         <h4><%= c.getUserId() %></h4><br>
         
         <p><%= c.getText()  %></p>
-          <div class="w3-row-padding" style="margin:0 -16px">
 	  </div>
       <%}} %>
       

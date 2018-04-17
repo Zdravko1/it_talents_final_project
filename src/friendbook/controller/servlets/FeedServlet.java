@@ -27,7 +27,6 @@ public class FeedServlet extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
 		//remove visited user's object and name from session when "home" button is pressed
 		req.getSession().removeAttribute("visitedUser");
 		req.getSession().removeAttribute("visitedUserPosts");
@@ -36,7 +35,7 @@ public class FeedServlet extends HttpServlet {
 			ArrayList<Post> feed = UserManager.getInstance().getUserFeed(u.getId());
 			req.getSession().setAttribute("feed", feed);
 			if(feed != null) {
-				req.getRequestDispatcher("newsFeed.jsp").forward(req, resp);
+				req.getRequestDispatcher("index.jsp").forward(req, resp);
 				return;
 			}
 			req.getRequestDispatcher("index2.jsp").forward(req, resp);

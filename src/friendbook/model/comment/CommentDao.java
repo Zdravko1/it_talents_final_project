@@ -78,7 +78,7 @@ public class CommentDao implements ICommentDao {
 	
 
 	@Override
-	public void getAllCommentsOfGivenPost(Post post) throws SQLException {
+	public void getAndSetAllCommentsOfGivenPost(Post post) throws SQLException {
 		try (PreparedStatement ps = connection
 				.prepareStatement("SELECT id, text, date, parent_id, user_id FROM comments WHERE post_id = ?")) {
 			ps.setLong(1, post.getId());

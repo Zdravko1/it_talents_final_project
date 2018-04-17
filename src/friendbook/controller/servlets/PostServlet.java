@@ -28,7 +28,6 @@ public class PostServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 //		Session.validateRequestIp(req, resp);
-		
 		User user = (User)req.getSession().getAttribute("user");
 		Post post = new Post(user, (String)req.getParameter("text"));
 		try {

@@ -36,7 +36,7 @@ public class RegisterServlet extends HttpServlet {
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
 		
-		if(password.compareTo(password2)!=0){
+		if(password.compareTo(password2) !=0 ) {
 			response.getWriter().write("Passwords don't match! ");
 		}
 		
@@ -48,7 +48,7 @@ public class RegisterServlet extends HttpServlet {
 			u.setFirstName(firstName);
 			u.setLastName(lastName);
 			UserManager.getInstance().register(u);
-			response.getWriter().write("You have been registered!");
+			request.getRequestDispatcher("login.jsp").forward(request, response);
 		} catch (InvalidPasswordException | IncorrectUserNameException | ExistingUserNameException
 				| InvalidEmailException | ExistingUserException e) {
 			request.setAttribute("error", e.getMessage());

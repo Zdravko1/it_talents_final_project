@@ -31,7 +31,7 @@ public class LoginServlet extends HttpServlet {
 		
 		try {
 			String username = request.getParameter("username");
-			String password = request.getParameter("pass");
+			String password = request.getParameter("password");
 			if(UserManager.getInstance().login(username, password)) {
 				User user = UserManager.getInstance().getUserByUsername(username);
 				//get user's posts and put them in request
