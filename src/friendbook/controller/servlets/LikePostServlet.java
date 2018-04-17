@@ -17,8 +17,8 @@ import friendbook.model.user.User;
 /**
  * Servlet implementation class LikeServlet
  */
-@WebServlet("/like")
-public class LikeServlet extends HttpServlet {
+@WebServlet("/likePost")
+public class LikePostServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -35,20 +35,14 @@ public class LikeServlet extends HttpServlet {
 				//if on feed reload posts and page
 				//if not "reloadVisitedUserPosts" checks if u are visiting someone's profile or not
 				//and reloads corresponding page
-//				if(reloadFeedPosts(req, resp)) {
-//					
-//				}
-//				else {
-//					reloadVisitedUserPosts(req, resp);
-//				}
 				if(!reloadFeedPosts(req, resp)) {
-					reloadVisitedUserPosts(req, resp);
+					reloadVisitedORUserPosts(req, resp);
 				}
 			} else {
 				PostManager.getInstance().increasePostLikes(u, id);
 				req.setAttribute("posts", UserManager.getInstance().getPostsByUserID(u.getId()));
 				if(!reloadFeedPosts(req, resp)) {
-					reloadVisitedUserPosts(req, resp);
+					reloadVisitedORUserPosts(req, resp);
 				}
 			}
 		} catch (SQLException e) {
@@ -67,7 +61,7 @@ public class LikeServlet extends HttpServlet {
 		return false;
 	}
 	
-	private void reloadVisitedUserPosts(HttpServletRequest req, HttpServletResponse resp) throws SQLException, ServletException, IOException {
+	private void reloadVisitedORUserPosts(HttpServletRequest req, HttpServletResponse resp) throws SQLException, ServletException, IOException {
 		User visited = (User)req.getSession().getAttribute("visitedUser");
 		if(visited != null) {
 			req.getSession().setAttribute("visitedUserPosts", UserManager.getInstance().getPostsByUserID(visited.getId()));

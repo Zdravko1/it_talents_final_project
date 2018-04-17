@@ -17,7 +17,7 @@
         <p><%= p.getText() %></p>
           <div class="w3-row-padding" style="margin:0 -16px">
 	      </div>
-	   <form method="post" action="like">
+	   <form method="post" action="likePost">
 	      <input type="hidden" name="like" value="<%= p.getId()%>">
 	      <button type="submit" class="w3-button w3-theme-d1 w3-margin-bottom" ><i class="fa fa-thumbs-up"></i>Like</button><%= p.getLikes() %>
       </form>
@@ -32,6 +32,10 @@
         <h4><%= c.getUserId() %></h4><br>
         
         <p><%= c.getText()  %></p>
+        <form method="post" action="likeComment">
+	      <input type="hidden" name="like" value="<%= c.getId()%>">
+	      <button type="submit" class="w3-button w3-theme-d1 w3-margin-bottom" ><i class="fa fa-thumbs-up"></i>Like</button><%= c.getLikes() %>
+      </form>
 	  </div>
       <%}} %>
       

@@ -31,22 +31,22 @@ public class CommentDao implements ICommentDao {
 	}
 
 	@Override
-	public void likeComment(User user, Comment comment) throws SQLException {
+	public void likeComment(long userId, long commentId) throws SQLException {
 		// TODO check if working
 		try (PreparedStatement ps = connection
-				.prepareStatement("INSERT INTO users_likes_comments (users_id, comments_id) VALUES (?,?)")) {
-			ps.setLong(1, user.getId());
-			ps.setLong(2, comment.getId());
+				.prepareStatement("INSERT INTO users_likes_comments (user_id, comment_id) VALUES (?,?)")) {
+			ps.setLong(1, userId);
+			ps.setLong(2, commentId);
 			ps.executeUpdate();
 		}
 	}
 
 	@Override
-	public void removeLike(User user, Comment comment) throws SQLException {
+	public void removeLike(long userId, long commentId) throws SQLException {
 		try (PreparedStatement ps = connection
-				.prepareStatement("DELETE FROM users_likes_comments WHERE users_id = ? AND comments_id = ?")) {
-			ps.setLong(1, user.getId());
-			ps.setLong(2, comment.getId());
+				.prepareStatement("DELETE FROM users_likes_comments WHERE user_id = ? AND comment_id = ?")) {
+			ps.setLong(1, userId);
+			ps.setLong(2, commentId);
 			ps.executeUpdate();
 		}
 	}
@@ -84,8 +84,10 @@ public class CommentDao implements ICommentDao {
 			ps.setLong(1, post.getId());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				post.addComment(new Comment(rs.getLong("user_id"), post.getId(), rs.getLong("parent_id"),
-						rs.getString("text")));
+				Comment comment = new Comment(rs.getLong("id"), rs.getLong("user_id"), post.getId(), rs.getLong("parent_id"),
+						rs.getString("text"));
+				comment.setLikes(getLikesByID(comment.getId()));
+				post.addComment(comment);
 			}
 		}
 	}
@@ -106,13 +108,14 @@ public class CommentDao implements ICommentDao {
 			statement.executeUpdate();
 		}
 	}
-
-	public boolean checkIfAlreadyLiked(User user, Comment comment) throws SQLException {
+	
+	@Override
+	public boolean checkIfAlreadyLiked(long userId, long commentId) throws SQLException {
 		// TODO check if working
 		try (PreparedStatement ps = connection.prepareStatement(
-				"SELECT users_id, comments_id FROM users_likes_comments WHERE users_id = ? AND comments_id = ?")) {
-			ps.setLong(1, user.getId());
-			ps.setLong(2, comment.getId());
+				"SELECT user_id, comment_id FROM users_likes_comments WHERE user_id = ? AND comment_id = ?")) {
+			ps.setLong(1, userId);
+			ps.setLong(2, commentId);
 			ResultSet rs = ps.executeQuery();
 
 			if (rs.next()) {
@@ -120,5 +123,18 @@ public class CommentDao implements ICommentDao {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public int getLikesByID(long id) throws SQLException {
+		int likes = 0;
+		String query = "SELECT COUNT(user_id) AS likes FROM users_likes_comments WHERE comment_id = ?";
+		try (PreparedStatement ps = connection.prepareStatement(query)) {
+			ps.setLong(1, id);
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			likes = rs.getInt("likes");
+		}
+		return likes;
 	}
 }
