@@ -33,7 +33,7 @@ public class PostDao implements IPostDao {
 	@Override
 	public void addPost(Post post) throws SQLException {
 		String query;
-		boolean hasImage = post.getImagePath() == null;
+		boolean hasImage = post.getImagePath() != null;
 		if (hasImage) {
 			query = "INSERT INTO posts(image_video_path, description, user_id) VALUES(?,?,?)";
 		} else {
@@ -79,7 +79,7 @@ public class PostDao implements IPostDao {
 			ps.setLong(1, user.getId());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				Post p = new Post(rs.getLong("id"), rs.getString("image_video_path"), rs.getString("desctription"), rs.getDate("date"), user);
+				Post p = new Post(rs.getLong("id"), rs.getString("image_video_path"), rs.getString("desctription") , user);
 				user.addPost(p);
 
 			}

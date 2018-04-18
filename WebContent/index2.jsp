@@ -18,6 +18,7 @@
 <html>
 <title>Friendbook</title>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue-grey.css">
@@ -108,8 +109,8 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
           <div class="w3-card w3-round w3-white" style="display : <%= visit ? "none" : "" %>">
             <div class="w3-container w3-padding">
               <h6 class="w3-opacity">Post something</h6>
-              <form action="post" method="post">
-              	 <input contenteditable="true" class="w3-border w3-padding" name="text" enctype="multipart/form-data">
+              <form action="post" method="post" enctype="multipart/form-data">
+              	<input contenteditable="true" class="w3-border w3-padding" name="text" required>
 				<input type="file" name="file" size="50" />
 				<br />
               	 <br>
@@ -141,7 +142,7 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
         <span class="w3-right w3-opacity"><%=  Math.abs(Duration.between(LocalDateTime.now(), p.getDate()).toHours())  %></span>
         <h4><%= p.getUser()	%></h4><br>
         <!-- -=============POST IMAGE================- -->
-        <img src="/w3images/avatar2.png" alt="Image" class="w3-left w3-circle w3-margin-right" style="width:60px"> 
+        <img src="<%= p.getImagePath() %>" alt="Image" class="w3-left w3-circle w3-margin-right" > 
         <hr class="w3-clear">
         <p><%= p.getText() %></p>
           <div class="w3-row-padding" style="margin:0 -16px">

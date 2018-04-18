@@ -2,9 +2,9 @@ package friendbook.model.post;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class Post implements Serializable{
 	private String imagePath;
 	private int likes;
 	private List<Comment> comments = new ArrayList<>();
-	private Date date;
+	private LocalDateTime date;
 	
 	//for testing purposes
 	public Post(User user, String text) {
@@ -27,7 +27,7 @@ public class Post implements Serializable{
 		setText(text);
 	}
 	
-	public Post(long id, User user, String text, Date date) {
+	public Post(long id, User user, String text, LocalDateTime date) {
 		this(user, text);
 		this.id = id;
 		this.date = date;
@@ -40,7 +40,7 @@ public class Post implements Serializable{
 		this.imagePath = imagePath;
 	}
 
-	public Post(long id, String imagePath, String text, User user) {
+	public Post(long id, String imagePath, String text, LocalDateTime date, User user) {
 		this.id = id;
 		this.imagePath = imagePath;
 		this.text = text;
@@ -48,6 +48,19 @@ public class Post implements Serializable{
 		this.date = date;
 	}
 	
+	public Post(int id, User u, String text) {
+		this.id = id;
+		this.user = u;
+		this.text = text;
+	}
+
+	public Post(long id, String imagePath, String text, User user) {
+		this.id = id;
+		this.imagePath = imagePath;
+		this.text = text;
+		this.user = user;
+	}
+
 	public LocalDateTime getDate() {
 		return date;
 	}
@@ -65,14 +78,6 @@ public class Post implements Serializable{
 			throw new IllegalArgumentException("Invalid comment");
 		}
 		this.text = text;
-	}
-	
-	public void setDate(Date date) {
-		this.date = date;
-	}
-	
-	public Date getDate() {
-		return date;
 	}
 	
 	public void addComment(Comment comment) {

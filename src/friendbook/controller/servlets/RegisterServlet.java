@@ -26,8 +26,8 @@ public class RegisterServlet extends HttpServlet {
 	
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	
-		Session.validateRequestIp(request, response);
+		//bugvo e
+//		Session.validateRequestIp(request, response);
 		
 		String username = request.getParameter("username");
 		String email = request.getParameter("email");

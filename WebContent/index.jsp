@@ -16,7 +16,7 @@
         <span class="w3-right w3-opacity"><%= Math.abs(Duration.between(LocalDateTime.now(), p.getDate()).toHours()) %> h</span>
         <h4><%= p.getUser()	%></h4><br>
         <!-- -=============POST IMAGE================- -->
-        <img src="/w3images/avatar2.png" alt="Image" class="w3-left w3-circle w3-margin-right" style="width:60px"> 
+        <img src="<%= p.getImagePath() %>" alt="Image" class="w3-left w3-circle w3-margin-right" > 
         <hr class="w3-clear">
         <p><%= p.getText() %></p>
           <div class="w3-row-padding" style="margin:0 -16px">

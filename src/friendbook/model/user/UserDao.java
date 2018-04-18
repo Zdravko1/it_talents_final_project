@@ -142,13 +142,13 @@ public class UserDao implements IUserDao {
 	@Override
 	public List<Post> getPostsByUserID(long id) throws SQLException {
 		ArrayList<Post> posts = new ArrayList<>();
-		String query = "SELECT id, description, date FROM posts WHERE user_id = ? ORDER BY date DESC";
+		String query = "SELECT id, description, date, image_video_path FROM posts WHERE user_id = ? ORDER BY date DESC";
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
 			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
 			User u = UserDao.getInstance().getByID(id);
 			while (rs.next()) {
-				Post p = new Post(rs.getInt("id"), u, rs.getString("description"), rs.getDate("date"));
+				Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u);
 				p.setLikes(PostManager.getInstance().getLikes(p.getId()));
 				p.setDate(rs.getTimestamp("date").toLocalDateTime());
 				CommentDao.getInstance().getAndSetAllCommentsOfGivenPost(p);
