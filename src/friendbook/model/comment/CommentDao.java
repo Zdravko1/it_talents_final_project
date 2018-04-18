@@ -54,12 +54,11 @@ public class CommentDao implements ICommentDao {
 	@Override
 	public void getCommentsOfParentComment(Comment comment) throws SQLException {
 		try (PreparedStatement ps = connection
-				.prepareStatement("SELECT text, user_id, date FROM comments WHERE user_id = ?")) {
+				.prepareStatement("SELECT id, text, user_id, date FROM comments WHERE parent_id = ?")) {
 			ps.setLong(1, comment.getId());
 			ResultSet rs = ps.executeQuery();
-			
 			while(rs.next()) {
-				Comment com = new Comment(rs.getLong("user_id"), comment.getPost(), comment.getId(),
+				Comment com = new Comment(rs.getLong("id"), rs.getLong("user_id"), comment.getPost(), comment.getId(),
 						rs.getString("text"));
 				com.setDate(rs.getTimestamp("date").toLocalDateTime());
 				comment.addComment(com);
@@ -100,7 +99,6 @@ public class CommentDao implements ICommentDao {
 			ps.setLong(1, post.getId());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-
 				Comment comment = new Comment(rs.getLong("id"), rs.getLong("user_id"), post.getId(), rs.getLong("parent_id"),
 						rs.getString("text"));
 				comment.setLikes(getLikesByID(comment.getId()));

@@ -142,7 +142,7 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
       %>
       <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
         <span class="w3-right w3-opacity"><%=  Math.abs(Duration.between(LocalDateTime.now(), c.getDate()).toHours())  %></span>
-        <h4><%= UserDao.getInstance().getByID(c.getUserId()) %></h4><br>
+        <h3><%= UserDao.getInstance().getByID(c.getUserId()) %></h3><br>
         
         <p><%= c.getText()  %></p>
       
@@ -153,8 +153,12 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
       %>
       <div class="w3-container w3-card w3-white w3-round w3-margin">
         <span class="w3-right w3-opacity"><%= Math.abs(Duration.between(LocalDateTime.now(), childC.getDate()).toHours()) %></span>
-        <h3><%= UserDao.getInstance().getByID(childC.getUserId()) %></h3>
+        <h4><%= UserDao.getInstance().getByID(childC.getUserId()) %></h4>
         <p><%= childC.getText()  %></p>
+         <form method="post" action="likeComment">
+	      <input type="hidden" name="like" value="<%= childC.getId()%>">
+	      <button type="submit" class="w3-button w3-theme-d1 w3-margin-bottom" ><i class="fa fa-thumbs-up"></i>Like</button><%= childC.getLikes() %>
+      </form>
 	  </div>
 
       <%}} %>
