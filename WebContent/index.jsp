@@ -1,3 +1,5 @@
+<%@page import="friendbook.model.user.UserDao"%>
+<%@page import="friendbook.controller.UserManager"%>
 <%@page import="friendbook.model.comment.Comment"%>
 <%@page import="java.util.List"%>
 <%@ include file="index2part1.jsp"%>
@@ -29,14 +31,29 @@
       %>
       <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
         <span class="w3-right w3-opacity">1 min</span>
-        <h4><%= c.getUserId() %></h4><br>
+        <h4><%= UserDao.getInstance().getByID(c.getUserId()) %></h4><br>
         
         <p><%= c.getText()  %></p>
+
+         <% 
+   		List<Comment> childComments = c.getComments();
+   		 if(childComments != null){
+    	for(Comment childC : childComments) {
+      %>
+      <div class="w3-container w3-card w3-white w3-round w3-margin">
+        <span class="w3-right w3-opacity">1 min</span>
+        <h4><%= UserDao.getInstance().getByID(childC.getUserId()) %></h4>
+        <p><%= childC.getText()  %></p>
+	  </div>
+
+      <%}} %>
+        
         <form method="post" action="likeComment">
 	      <input type="hidden" name="like" value="<%= c.getId()%>">
 	      <button type="submit" class="w3-button w3-theme-d1 w3-margin-bottom" ><i class="fa fa-thumbs-up"></i>Like</button><%= c.getLikes() %>
       </form>
 	  </div>
+	  
       <%}} %>
       
       

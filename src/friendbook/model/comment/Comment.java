@@ -1,7 +1,9 @@
 package friendbook.model.comment;
 
-import friendbook.model.post.Post;
-import friendbook.model.user.User;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Comment {
 
@@ -10,7 +12,10 @@ public class Comment {
 	private long userId;
 	private long postId;
 	private Long parentComment;
+	private LocalDateTime date;
+	private List<Comment> comments = new ArrayList<>();
 	private int likes;
+
 	
 	public Comment(long userId, long postId, Long parentComment, String text) {
 		this.userId = userId;
@@ -24,6 +29,15 @@ public class Comment {
 		this.id = id;
 	}
 	
+	void setDate(LocalDateTime date) {
+		this.date = date;
+	}
+	
+	public LocalDateTime getDate() {
+		return date;
+	}
+	
+	
 	private void setText(String text) {
 		if (text == null || text.trim().isEmpty()) {
 			throw new IllegalArgumentException("Comment cannot be empty!");
@@ -35,8 +49,16 @@ public class Comment {
 		return postId;
 	}
 	
+	public void addComment(Comment comment) {
+		this.comments.add(comment);
+	}
+	
 	public Long getParentComment() {
 		return parentComment;
+	}
+	
+	public List<Comment> getComments() {
+		return Collections.unmodifiableList(this.comments);
 	}
 	
 	public long getUserId() {

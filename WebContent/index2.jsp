@@ -1,3 +1,8 @@
+<%@page import="java.text.DateFormat"%>
+<%@page import="java.time.LocalDateTime"%>
+<%@page import="java.time.LocalDate"%>
+<%@page import="java.time.Duration"%>
+<%@page import="friendbook.model.user.UserDao"%>
 <%@page import="friendbook.model.comment.Comment"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.LinkedList"%>
@@ -136,15 +141,30 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
     	for(Comment c : comments) {
       %>
       <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
-        <span class="w3-right w3-opacity">1 min</span>
-        <h4><%= c.getUserId() %></h4><br>
+        <span class="w3-right w3-opacity"><%=  Math.abs(Duration.between(LocalDateTime.now(), c.getDate()).toHours())  %></span>
+        <h4><%= UserDao.getInstance().getByID(c.getUserId()) %></h4><br>
         
         <p><%= c.getText()  %></p>
+      
+         <% 
+   		List<Comment> childComments = c.getComments();
+   		 if(childComments != null){
+    	for(Comment childC : childComments) {
+      %>
+      <div class="w3-container w3-card w3-white w3-round w3-margin">
+        <span class="w3-right w3-opacity"><%= Math.abs(Duration.between(LocalDateTime.now(), childC.getDate()).toHours()) %></span>
+        <h3><%= UserDao.getInstance().getByID(childC.getUserId()) %></h3>
+        <p><%= childC.getText()  %></p>
+	  </div>
+
+      <%}} %>
+        
         <form method="post" action="likeComment">
 	      <input type="hidden" name="like" value="<%= c.getId()%>">
 	      <button type="submit" class="w3-button w3-theme-d1 w3-margin-bottom" ><i class="fa fa-thumbs-up"></i>Like</button><%= c.getLikes() %>
       </form>
 	  </div>
+	  
       <%}} %>
       
       
