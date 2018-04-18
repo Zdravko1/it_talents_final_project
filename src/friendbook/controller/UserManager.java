@@ -24,31 +24,31 @@ public class UserManager {
 	private static UserManager instance;
 
 	public static synchronized UserManager getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new UserManager();
 		}
 		return instance;
 	}
-	
+
 	private UserManager() {
-		
+
 	}
-	
-	
-	//TODO CHANGE
-	public void sessionCheck(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	// TODO CHANGE
+	public void sessionCheck(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		if(session.isNew() || session.getAttribute("user") == null) {
+		if (session.isNew() || session.getAttribute("user") == null) {
 			System.out.println("vliza v if-a");
 			request.getRequestDispatcher("login.jsp").forward(request, response);
-		}
-		else {
-			//remove visited user's object and name from session when "home" button is pressed
+		} else {
+			// remove visited user's object and name from session when "home" button is
+			// pressed
 			session.removeAttribute("visitedUser");
 			session.removeAttribute("visitedUserPosts");
-			//remove feed posts
+			// remove feed posts
 			session.removeAttribute("feed");
-			//reload user's posts on refresh
+			// reload user's posts on refresh
 			try {
 				User user = (User) session.getAttribute("user");
 				List<Post> posts = UserManager.getInstance().getPostsByUserID(user.getId());
@@ -59,9 +59,7 @@ public class UserManager {
 			request.getRequestDispatcher("index2.jsp").forward(request, response);
 		}
 	}
-	
-	
-	
+
 	public boolean login(String username, String password) throws SQLException, WrongCredentialsException {
 		try {
 			UserDao.getInstance().loginCheck(username, password);
@@ -71,12 +69,12 @@ public class UserManager {
 			throw e;
 		}
 	}
-	
+
 	public boolean register(User u) throws ExistingUserException, SQLException {
 		try {
-			//check if same user exists
+			// check if same user exists
 			UserDao.getInstance().existingUserCheck(u.getUsername(), u.getEmail());
-			//save in db
+			// save in db
 			UserDao.getInstance().saveUser(u);
 			return true;
 		} catch (SQLException e) {
@@ -84,11 +82,11 @@ public class UserManager {
 			throw e;
 		}
 	}
-	
+
 	public User getUser(int id) throws SQLException {
 		return UserDao.getInstance().getByID(id);
 	}
-	
+
 	public User getUser(String name) throws SQLException {
 		return UserDao.getInstance().getUserByNames(name);
 	}
@@ -100,8 +98,8 @@ public class UserManager {
 	public boolean isPostLiked(User u, int id) throws SQLException {
 		return UserDao.getInstance().isPostLiked(u, id);
 	}
-	
-	public List<String> getUsersNamesStartingWith(String term) throws SQLException{
+
+	public List<String> getUsersNamesStartingWith(String term) throws SQLException {
 		return UserDao.getInstance().getUsersNamesStartingWith(term);
 	}
 
@@ -110,15 +108,19 @@ public class UserManager {
 	}
 
 	public void follow(User user, long followedId) throws SQLException {
-		UserDao.getInstance().followUser(user, followedId);
+		if (isFollower(user, followedId)) {
+			UserDao.getInstance().unfollowUser(user, followedId);
+		} else {
+			UserDao.getInstance().followUser(user, followedId);
+		}
 	}
 
 	public ArrayList<Post> getUserFeed(long id) throws SQLException {
 		return UserDao.getInstance().getUserFeedByID(id);
 	}
-	
+
 	public boolean isFollower(User follower, long userId) throws SQLException {
 		return UserDao.getInstance().isFollower(follower, userId);
 	}
-	
+
 }

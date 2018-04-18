@@ -54,6 +54,7 @@ public class PostDao implements IPostDao {
 	public void deletePost(long postId) throws SQLException {
 		try (PreparedStatement ps = connection.prepareStatement("DELETE FROM posts WHERE id = ?")) {
 			ps.setLong(1, postId);
+			ps.executeUpdate();
 		}
 	}
 
@@ -78,7 +79,9 @@ public class PostDao implements IPostDao {
 			ps.setLong(1, user.getId());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				user.addPost(new Post(rs.getLong("id"), rs.getString("image_video_path"), rs.getString("desctription"), rs.getDate("date"), user));
+				Post post = new Post(rs.getLong("id"), rs.getString("image_video_path"), rs.getString("desctription"), user);
+				post.setDate(rs.getTimestamp("date").toLocalDateTime());
+				user.addPost(post);
 			}
 		}
 	}

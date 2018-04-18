@@ -1,3 +1,5 @@
+<%@page import="java.time.LocalDateTime"%>
+<%@page import="java.time.Duration"%>
 <%@page import="friendbook.model.user.UserDao"%>
 <%@page import="friendbook.controller.UserManager"%>
 <%@page import="friendbook.model.comment.Comment"%>
@@ -11,7 +13,7 @@
       	for(Post p : posts){
       %>
       <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
-        <span class="w3-right w3-opacity">1 min</span>
+        <span class="w3-right w3-opacity"><%= Math.abs(Duration.between(LocalDateTime.now(), p.getDate()).toHours()) %> h</span>
         <h4><%= p.getUser()	%></h4><br>
         <!-- -=============POST IMAGE================- -->
         <img src="/w3images/avatar2.png" alt="Image" class="w3-left w3-circle w3-margin-right" style="width:60px"> 
@@ -30,7 +32,7 @@
     	for(Comment c : comments) {
       %>
       <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
-        <span class="w3-right w3-opacity">1 min</span>
+        <span class="w3-right w3-opacity"><%= Math.abs(Duration.between(LocalDateTime.now(), c.getDate()).toHours()) %> h</span>
         <h4><%= UserDao.getInstance().getByID(c.getUserId()) %></h4><br>
         
         <p><%= c.getText()  %></p>
@@ -41,7 +43,7 @@
     	for(Comment childC : childComments) {
       %>
       <div class="w3-container w3-card w3-white w3-round w3-margin">
-        <span class="w3-right w3-opacity">1 min</span>
+        <span class="w3-right w3-opacity"><%= Math.abs(Duration.between(LocalDateTime.now(), childC.getDate()).toHours()) %> h</span>
         <h4><%= UserDao.getInstance().getByID(childC.getUserId()) %></h4>
         <p><%= childC.getText()  %></p>
 	  </div>

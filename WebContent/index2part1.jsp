@@ -78,7 +78,9 @@ boolean visit = request.getSession().getAttribute("visitedUser") != null;
          		<button type="submit" name="followedId" value="<%=u.getId()%>" class="w3-button w3-theme"><i class="fa fa-handshake-o"></i>Follow</button>
          		</form>
          		<% } else {%>
-         		<button   class="w3-button w3-theme"><i class="fa fa-heart"></i>Followed</button>
+         		<form method="post" action="follow">
+         		<button type="submit" name="followedId" value="<%=u.getId()%>" class="w3-button w3-theme"><i class="fa fa-handshake-o"></i>Followed</button>
+         		</form>
          		<%}}%>
          	
          </div>

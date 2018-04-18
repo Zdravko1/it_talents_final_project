@@ -50,17 +50,18 @@ public class CommentDao implements ICommentDao {
 			ps.executeUpdate();
 		}
 	}
-	
+
 	@Override
 	public void getCommentsOfParentComment(Comment comment) throws SQLException {
 		try (PreparedStatement ps = connection
 				.prepareStatement("SELECT id, text, user_id, date FROM comments WHERE parent_id = ?")) {
 			ps.setLong(1, comment.getId());
 			ResultSet rs = ps.executeQuery();
-			while(rs.next()) {
+			while (rs.next()) {
 				Comment com = new Comment(rs.getLong("id"), rs.getLong("user_id"), comment.getPost(), comment.getId(),
 						rs.getString("text"));
 				com.setDate(rs.getTimestamp("date").toLocalDateTime());
+				getCommentsOfParentComment(com);
 				comment.addComment(com);
 			}
 		}
@@ -90,7 +91,6 @@ public class CommentDao implements ICommentDao {
 		}
 		System.out.println("Added comment");
 	}
-	
 
 	@Override
 	public void getAndSetAllCommentsOfGivenPost(Post post) throws SQLException {
@@ -99,12 +99,14 @@ public class CommentDao implements ICommentDao {
 			ps.setLong(1, post.getId());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				Comment comment = new Comment(rs.getLong("id"), rs.getLong("user_id"), post.getId(), rs.getLong("parent_id"),
-						rs.getString("text"));
-				comment.setLikes(getLikesByID(comment.getId()));
-				comment.setDate(rs.getTimestamp("date").toLocalDateTime());
-				CommentDao.getInstance().getCommentsOfParentComment(comment);
-				post.addComment(comment);
+				if (rs.getLong("parent_id") == 0) {
+					Comment comment = new Comment(rs.getLong("id"), rs.getLong("user_id"), post.getId(),
+							rs.getLong("parent_id"), rs.getString("text"));
+					comment.setLikes(getLikesByID(comment.getId()));
+					comment.setDate(rs.getTimestamp("date").toLocalDateTime());
+					CommentDao.getInstance().getCommentsOfParentComment(comment);
+					post.addComment(comment);
+				}
 			}
 		}
 	}
@@ -125,7 +127,7 @@ public class CommentDao implements ICommentDao {
 			statement.executeUpdate();
 		}
 	}
-	
+
 	@Override
 	public boolean checkIfAlreadyLiked(long userId, long commentId) throws SQLException {
 		// TODO check if working

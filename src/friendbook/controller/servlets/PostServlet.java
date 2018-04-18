@@ -1,5 +1,6 @@
 package friendbook.controller.servlets;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -11,6 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import friendbook.controller.PostManager;
 import friendbook.controller.Session;
@@ -27,9 +32,11 @@ public class PostServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
 //		Session.validateRequestIp(req, resp);
 		User user = (User)req.getSession().getAttribute("user");
 		Post post = new Post(user, (String)req.getParameter("text"));
+		
 		try {
 			PostManager.getInstance().addPost(post, req);
 			System.out.println("Added post to database.");

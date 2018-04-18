@@ -85,7 +85,17 @@ public class UserDao implements IUserDao {
 	@Override
 	public void followUser(User user, long followedId) throws SQLException {
 		try (PreparedStatement ps = connection.prepareStatement(
-				"INSERT INTO users_has_users (user_id, user_id_follower) VALUES (?,?)")) {	
+				"INSERT INTO users_has_users (user_id_followed, user_id_follower) VALUES (?,?)")) {	
+			ps.setLong(1, followedId);
+			ps.setLong(2, user.getId());
+			ps.executeUpdate();
+		}
+	}
+	
+	@Override
+	public void unfollowUser(User user, long followedId) throws SQLException {
+		try (PreparedStatement ps = connection.prepareStatement(
+				"DELETE FROM users_has_users WHERE user_id_followed = ? AND user_id_follower = ?")) {	
 			ps.setLong(1, followedId);
 			ps.setLong(2, user.getId());
 			ps.executeUpdate();
@@ -132,7 +142,7 @@ public class UserDao implements IUserDao {
 	@Override
 	public List<Post> getPostsByUserID(long id) throws SQLException {
 		ArrayList<Post> posts = new ArrayList<>();
-		String query = "SELECT id, description FROM posts WHERE user_id = ? ORDER BY date DESC";
+		String query = "SELECT id, description, date FROM posts WHERE user_id = ? ORDER BY date DESC";
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
 			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
@@ -140,6 +150,7 @@ public class UserDao implements IUserDao {
 			while (rs.next()) {
 				Post p = new Post(rs.getInt("id"), u, rs.getString("description"));
 				p.setLikes(PostManager.getInstance().getLikes(p.getId()));
+				p.setDate(rs.getTimestamp("date").toLocalDateTime());
 				CommentDao.getInstance().getAndSetAllCommentsOfGivenPost(p);
 				posts.add(p);
 			}
@@ -198,7 +209,8 @@ public class UserDao implements IUserDao {
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				User u = getByID(rs.getInt("user_id"));
-				Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), rs.getDate("date"), u);
+				Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u);
+				p.setDate(rs.getTimestamp("date").toLocalDateTime());
 				p.setLikes(PostManager.getInstance().getLikes(p.getId()));
 				CommentDao.getInstance().getAndSetAllCommentsOfGivenPost(p);
 				feed.add(p);
@@ -210,7 +222,7 @@ public class UserDao implements IUserDao {
 
 	@Override
 	public boolean isFollower(User follower, long userId) throws SQLException {
-		String query = "SELECT * FROM users_has_users WHERE user_id_follower = ? AND user_id = ?";
+		String query = "SELECT * FROM users_has_users WHERE user_id_follower = ? AND user_id_followed = ?";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
 			ps.setLong(1, follower.getId());
 			ps.setLong(2, userId);
@@ -222,5 +234,7 @@ public class UserDao implements IUserDao {
 		}
 		return false;
 	}
+
+	
 
 }

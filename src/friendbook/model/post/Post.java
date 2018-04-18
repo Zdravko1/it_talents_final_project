@@ -2,6 +2,7 @@ package friendbook.model.post;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +19,7 @@ public class Post implements Serializable{
 	private String imagePath;
 	private int likes;
 	private List<Comment> comments = new ArrayList<>();
+	private LocalDateTime date;
 	
 	//for testing purposes
 	public Post(User user, String text) {
@@ -37,11 +39,23 @@ public class Post implements Serializable{
 		this.imagePath = imagePath;
 	}
 
-	public Post(long id, String imagePath, String text, Date date, User user) {
+	public Post(long id, String imagePath, String text, User user) {
 		this.id = id;
 		this.imagePath = imagePath;
 		this.text = text;
 		this.user = user;
+	}
+	
+	public LocalDateTime getDate() {
+		return date;
+	}
+	
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+	
+	public void setDate(LocalDateTime date) {
+		this.date = date;
 	}
 
 	public void setText(String text) {
