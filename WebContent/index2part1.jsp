@@ -93,9 +93,9 @@ boolean visit = request.getSession().getAttribute("visitedUser") != null;
     <!-- Middle Column -->
     <div class="w3-col m7">
     
-      <div class="w3-row-padding" style="display : <%= (visit || onFeed) ? "none" : "" %>">
+      <div class="w3-row-padding" >
         <div class="w3-col m12">
-          <div class="w3-card w3-round w3-white">
+          <div class="w3-card w3-round w3-white"style="display : <%= (visit || onFeed) ? "none" : "" %>">
             <div class="w3-container w3-padding">
               <h6 class="w3-opacity">Post something</h6>
               <form action="post" method="post">
@@ -106,5 +106,12 @@ boolean visit = request.getSession().getAttribute("visitedUser") != null;
               </form>
             </div>
           </div>
+          <form method="post" action="order">
+          <select name="order">
+          	<option value="likes">Likes</option>
+          	<option value="date">Date</option>
+          </select>
+          <button type="submit">Order</button>
+          </form>
         </div>
       </div>

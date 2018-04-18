@@ -100,9 +100,9 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
     <!-- Middle Column -->
     <div class="w3-col m7">
     
-      <div class="w3-row-padding" style="display : <%= visit ? "none" : "" %>">
+      <div class="w3-row-padding" >
         <div class="w3-col m12">
-          <div class="w3-card w3-round w3-white">
+          <div class="w3-card w3-round w3-white" style="display : <%= visit ? "none" : "" %>">
             <div class="w3-container w3-padding">
               <h6 class="w3-opacity">Post something</h6>
               <form action="post" method="post">
@@ -113,6 +113,13 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
               </form>
             </div>
           </div>
+          <form method="post" action="order">
+          <select name="order">
+          	<option value="likes">Likes</option>
+          	<option value="date">Date</option>
+          </select>
+          <button type="submit">Order</button>
+          </form>
         </div>
       </div>
       
@@ -173,7 +180,7 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
       
       
       <form action="comment" method="post">
-              	 <input contenteditable="true" class="w3-border w3-padding" name="text">
+              	 <input contenteditable="true" class="w3-border w3-padding" name="text" required>
               	  <input type="hidden" name="currentPost" value="<%= p.getId()%>">
               	 <br>
               	 <button type="submit" class="w3-button w3-theme"><i class="fa fa-pencil"></i>Comment</button> 
@@ -216,7 +223,6 @@ $(document).ready(function() {
      });
   });
 });
-
 // Accordion
 function myFunction(id) {
     var x = document.getElementById(id);
@@ -229,7 +235,6 @@ function myFunction(id) {
         x.previousElementSibling.className.replace(" w3-theme-d1", "");
     }
 }
-
 // Used to toggle the menu on smaller screens when clicking on the menu button
 function openNav() {
     var x = document.getElementById("navDemo");

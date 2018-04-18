@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import friendbook.controller.CommentManager;
 import friendbook.controller.Session;
+import friendbook.controller.UserManager;
 import friendbook.model.comment.Comment;
 import friendbook.model.post.Post;
 import friendbook.model.post.PostDao;
@@ -19,6 +20,10 @@ import friendbook.model.user.User;
 
 @WebServlet("/comment")
 public class CommentServlet extends HttpServlet {
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		UserManager.getInstance().sessionCheck(req, resp);
+	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -36,6 +41,7 @@ public class CommentServlet extends HttpServlet {
 				request.getRequestDispatcher("index.jsp").forward(request, response);
 				return;
 			}
+			request.setAttribute("posts", UserManager.getInstance().getPostsByUserID(user.getId()));
 			request.getRequestDispatcher("index2.jsp").forward(request, response);
 		} catch (SQLException e) {
 			System.out.println("SQLBug: " + e.getMessage());

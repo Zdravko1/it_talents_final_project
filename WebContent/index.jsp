@@ -58,7 +58,7 @@
       
       
       <form action="comment" method="post">
-              	 <input contenteditable="true" class="w3-border w3-padding" name="text">
+              	 <input contenteditable="true" class="w3-border w3-padding" name="text" required>
               	  <input type="hidden" name="currentPost" value="<%= p.getId()%>">
               	 <br>
               	 <button type="submit" class="w3-button w3-theme"><i class="fa fa-pencil"></i>Comment</button> 
