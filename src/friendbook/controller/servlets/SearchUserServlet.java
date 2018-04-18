@@ -27,14 +27,14 @@ public class SearchUserServlet extends HttpServlet {
 		String name = req.getParameter("user");
 		//cash visited user's object and posts in session
 		try {
-			User u = UserManager.getInstance().getUser(name);
+			User visitedUser = UserManager.getInstance().getUser(name);
 			//if the searched user is followed already put a flag and change the follow button to followed in jsp
 			//or if this is the same user
-			if(UserManager.getInstance().isFollower(user, u.getId()) || user.getId() == u.getId()) {
-				u.setFollowed(true);
+			if(UserManager.getInstance().isFollower(user, visitedUser.getId()) || user.getId() == visitedUser.getId()) {
+				visitedUser.setFollowed(true);
 			}
-			req.getSession().setAttribute("visitedUser", u);
-			req.getSession().setAttribute("visitedUserPosts", UserManager.getInstance().getPostsByUserID(u.getId()));
+			req.getSession().setAttribute("visitedUser", visitedUser);
+			req.getSession().setAttribute("visitedUserPosts", UserManager.getInstance().getPostsByUserID(visitedUser.getId()));
 			req.getRequestDispatcher("index2.jsp").forward(req, resp);
 		} catch (SQLException e) {
 			System.out.println("SQL Bug: " + e.getMessage());

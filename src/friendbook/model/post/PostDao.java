@@ -79,9 +79,9 @@ public class PostDao implements IPostDao {
 			ps.setLong(1, user.getId());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				Post post = new Post(rs.getLong("id"), rs.getString("image_video_path"), rs.getString("desctription"), user);
-				post.setDate(rs.getTimestamp("date").toLocalDateTime());
-				user.addPost(post);
+				Post p = new Post(rs.getLong("id"), rs.getString("image_video_path"), rs.getString("desctription"), rs.getDate("date"), user);
+				user.addPost(p);
+
 			}
 		}
 	}

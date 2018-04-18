@@ -11,10 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import friendbook.exceptions.ExistingUserException;
-import friendbook.exceptions.ExistingUserNameException;
-import friendbook.exceptions.IncorrectUserNameException;
-import friendbook.exceptions.InvalidEmailException;
-import friendbook.exceptions.InvalidPasswordException;
 import friendbook.exceptions.WrongCredentialsException;
 import friendbook.model.post.Post;
 import friendbook.model.user.User;
@@ -38,8 +34,7 @@ public class UserManager {
 	public void sessionCheck(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		if (session.isNew() || session.getAttribute("user") == null) {
-			System.out.println("vliza v if-a");
+		if(session.isNew() || session.getAttribute("user") == null) {
 			request.getRequestDispatcher("login.jsp").forward(request, response);
 		} else {
 			// remove visited user's object and name from session when "home" button is
@@ -53,10 +48,10 @@ public class UserManager {
 				User user = (User) session.getAttribute("user");
 				List<Post> posts = UserManager.getInstance().getPostsByUserID(user.getId());
 				request.setAttribute("posts", posts);
+				request.getRequestDispatcher("index2.jsp").forward(request, response);
 			} catch (SQLException e) {
 				System.out.println("SQL bug: " + e.getMessage());
 			}
-			request.getRequestDispatcher("index2.jsp").forward(request, response);
 		}
 	}
 

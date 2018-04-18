@@ -19,7 +19,7 @@ public class Post implements Serializable{
 	private String imagePath;
 	private int likes;
 	private List<Comment> comments = new ArrayList<>();
-	private LocalDateTime date;
+	private Date date;
 	
 	//for testing purposes
 	public Post(User user, String text) {
@@ -27,9 +27,10 @@ public class Post implements Serializable{
 		setText(text);
 	}
 	
-	public Post(long id, User user, String text) {
+	public Post(long id, User user, String text, Date date) {
 		this(user, text);
 		this.id = id;
+		this.date = date;
 	}
 	//
 	
@@ -44,6 +45,7 @@ public class Post implements Serializable{
 		this.imagePath = imagePath;
 		this.text = text;
 		this.user = user;
+		this.date = date;
 	}
 	
 	public LocalDateTime getDate() {
@@ -63,6 +65,14 @@ public class Post implements Serializable{
 			throw new IllegalArgumentException("Invalid comment");
 		}
 		this.text = text;
+	}
+	
+	public void setDate(Date date) {
+		this.date = date;
+	}
+	
+	public Date getDate() {
+		return date;
 	}
 	
 	public void addComment(Comment comment) {
