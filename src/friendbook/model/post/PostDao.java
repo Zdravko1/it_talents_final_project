@@ -32,19 +32,19 @@ public class PostDao implements IPostDao {
 
 	@Override
 	public void addPost(Post post) throws SQLException {
-		String query;
+		String query = "INSERT INTO posts(description, user_id) VALUES(?,?)";
 		boolean hasImage = post.getImagePath() != null;
-		if (hasImage) {
-			query = "INSERT INTO posts(image_video_path, description, user_id) VALUES(?,?,?)";
-		} else {
-			query = "INSERT INTO posts(image_video_path, description, user_id) VALUES(null,?,?)";
-		}
+//		if (hasImage) {
+//			query = "INSERT INTO posts(image_video_path, description, user_id) VALUES(?,?,?)";
+//		} else {
+//			query = "INSERT INTO posts(image_video_path, description, user_id) VALUES(null,?,?)";
+//		}
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
-			if (hasImage) {
-				ps.setString(1, post.getImagePath());
-			}
-			ps.setString(2, post.getText());
-			ps.setLong(3, post.getUser().getId());
+//			if (hasImage) {
+//				ps.setString(1, post.getImagePath());
+//			}
+			ps.setString(1, post.getText());
+			ps.setLong(2, post.getUser().getId());
 			ps.executeUpdate();
 		}
 

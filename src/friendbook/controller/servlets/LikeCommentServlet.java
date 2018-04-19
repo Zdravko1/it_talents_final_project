@@ -31,15 +31,17 @@ public class LikeCommentServlet extends HttpServlet {
 				//if on feed reload posts and page
 				//if not "reloadVisitedUserPosts" checks if u are visiting someone's profile or not
 				//and reloads corresponding page
-				if(!reloadFeedPosts(req, resp)) {
-					reloadVisitedORUserPosts(req, resp);
-				}
+//				if(!reloadFeedPosts(req, resp)) {
+//					reloadVisitedORUserPosts(req, resp);
+//				}
+				resp.getWriter().print(CommentManager.getInstance().getLikes(commentId));
 			} else {
 				CommentManager.getInstance().increaseCommentLikes(u.getId(), commentId);
 				req.setAttribute("posts", UserManager.getInstance().getPostsByUserID(u.getId()));
-				if(!reloadFeedPosts(req, resp)) {
-					reloadVisitedORUserPosts(req, resp);
-				}
+//				if(!reloadFeedPosts(req, resp)) {
+//					reloadVisitedORUserPosts(req, resp);
+//				}
+				resp.getWriter().print(CommentManager.getInstance().getLikes(commentId));
 			}
 		} catch (SQLException e) {
 			System.out.println("SQL Bug: " + e.getMessage());

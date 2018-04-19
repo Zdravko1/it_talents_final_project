@@ -58,4 +58,9 @@ public class CommentManager {
 	public void increaseCommentLikes(long userId, long commentId) throws SQLException{
 		CommentDao.getInstance().likeComment(userId, commentId);
 	}
+
+
+	public int getLikes(long commentId) throws SQLException {
+		return CommentDao.getInstance().getLikesByID(commentId);
+	}
 }

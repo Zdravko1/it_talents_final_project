@@ -1,8 +1,6 @@
 package friendbook.controller.servlets;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
@@ -13,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import friendbook.controller.PostManager;
 import friendbook.controller.Session;
@@ -27,25 +28,29 @@ import friendbook.model.user.User;
 @MultipartConfig(fileSizeThreshold=1024*1024*2,
 maxFileSize=1024*1024*5)
 public class PostServlet extends HttpServlet {
-	private static final String SAVE_PATH="C:\\Users\\snape\\Desktop\\JavaFinalProject\\Friendbook.bg\\WebContent";
+//	private static final String SAVE_PATH="C:\\Users\\snape\\Desktop\\JavaFinalProject\\Friendbook.bg\\WebContent";
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//test upload
-		response.setContentType("text/html");
-        Part file = request.getPart("file");
-        String fileName=extractfilename(file);
- 	    file.write(SAVE_PATH + File.separator + fileName);
- 	    String filePath= fileName ;
+//		response.setContentType("text/html");
+//        Part file = request.getPart("file");
+//        String fileName=extractfilename(file);
+// 	    file.write(SAVE_PATH + File.separator + fileName);
+// 	    String filePath= fileName ;
  	    //test upload
  	    
 //		Session.validateRequestIp(req, resp);
 		User user = (User)request.getSession().getAttribute("user");
-		Post post = new Post(user, (String)request.getParameter("text"), filePath);
+		Post post = new Post(user, (String)request.getParameter("text"));
 		
 		try {
 			PostManager.getInstance().addPost(post, request);
 			System.out.println("Added post to database.");
-			UserManager.getInstance().sessionCheck(request, response);
+			
+			String json = new Gson().toJson(UserManager.getInstance().getLastPostByUserId(user.getId()));
+			response.getWriter().print(json);
+			
+//			UserManager.getInstance().sessionCheck(request, response);
 		} catch (SQLException e) {
 			System.out.println("SQLBug: " + e.getMessage());
 		} catch(Exception e) {
