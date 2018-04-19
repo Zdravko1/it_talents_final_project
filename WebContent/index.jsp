@@ -9,25 +9,26 @@
       
  <% 
       	ArrayList<Post> posts = visit ? (ArrayList)request.getSession().getAttribute("visitedUserPosts") : (ArrayList)request.getSession().getAttribute("feed");
-      	if(posts != null){
-      	for(Post p : posts){
-      %>
-      <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
-        <span class="w3-right w3-opacity"><%= Math.abs(Duration.between(LocalDateTime.now(), p.getDate()).toHours()) %> h</span>
-        <h4><%= p.getUser()	%></h4><br>
-        <!-- -=============POST IMAGE================- -->
-        <img src="<%= p.getImagePath() %>" alt="Image" class="w3-left w3-circle w3-margin-right" > 
-        <hr class="w3-clear">
-        <p><%= p.getText() %></p>
-          <div class="w3-row-padding" style="margin:0 -16px">
-	      </div>
-	   <form method="post" action="likePost">
-	      <input type="hidden" name="like" value="<%= p.getId()%>">
-	      <button type="submit" class="w3-button w3-theme-d1 w3-margin-bottom" ><i class="fa fa-thumbs-up"></i>Like</button><%= p.getLikes() %>
+    	if(posts != null){
+          	for(int i = 0; i < posts.size(); i++){
+          %>
+          <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+            <span class="w3-right w3-opacity"><%=  Math.abs(Duration.between(LocalDateTime.now(), posts.get(i).getDate()).toHours())  %></span>
+            <h4><%= posts.get(i).getUser()	%></h4><br>
+            <!-- -=============POST IMAGE================- -->
+            <img src="<%= posts.get(i).getImagePath() %>" alt="Image" class="w3-left w3-circle w3-margin-right" > 
+            <hr class="w3-clear">
+            <p><%= posts.get(i).getText() %></p>
+              <div class="w3-row-padding" style="margin:0 -16px">
+    	      </div>
+	      <form method="post" action="likePost">
+	      <input type="hidden" id="like" value="<%= posts.get(i).getId()%>">
+	      <input onclick="likePost(<%=i %>)" type="button"class="w3-button w3-theme-d1 w3-margin-bottom" class="fa fa-thumbs-up" value="Like">
+	      <p class="likeID"><%= posts.get(i).getLikes() %></p>
       </form>
       
      <% 
-   		List<Comment> comments = p.getComments();
+   		List<Comment> comments = posts.get(i).getComments();
    		 if(comments != null){
     	for(Comment c : comments) {
       %>
@@ -61,7 +62,7 @@
       
       <form action="comment" method="post">
               	 <input contenteditable="true" class="w3-border w3-padding" name="text" required>
-              	  <input type="hidden" name="currentPost" value="<%= p.getId()%>">
+              	  <input type="hidden" name="currentPost" value="<%= posts.get(i).getId()%>">
               	 <br>
               	 <button type="submit" class="w3-button w3-theme"><i class="fa fa-pencil"></i>Comment</button> 
               </form>
