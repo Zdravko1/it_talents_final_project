@@ -29,8 +29,13 @@ public class PostManager {
 	}
 	
 	public void addPost(Post post, HttpServletRequest request) throws SQLException {
-		PostDao.getInstance().addPost(post);
-		if(request.getAttribute("posts") != null) {
+		if(post.getImagePath() != null && !post.getImagePath().trim().isEmpty()) {
+			PostDao.getInstance().addPostWithImage(post);
+		} else {
+			PostDao.getInstance().addPostWithoutImage(post);
+		}
+		
+		if(request.getAttribute("posts") != null ) {
 			LinkedList<Post> posts = (LinkedList)request.getAttribute("posts");
 			posts.addFirst(post);
 			request.setAttribute("posts", posts);

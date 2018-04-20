@@ -6,16 +6,20 @@ import friendbook.model.user.User;
 
 
 public interface IPostDao {
+
+	void deletePost(long postId) throws SQLException;
 	
-	void addPost(Post post) throws Exception;
+	int getLikesByID(long id) throws SQLException;
 	
-	void deletePost(long postId) throws Exception;
+	void increasePostLike(User u, long id) throws SQLException;
 	
-	int getLikesByID(long id) throws Exception;
-	
-	void increasePostLike(User u, long id) throws Exception;
-	
-	void decreasePostLike(User u, long id) throws Exception;
+	void decreasePostLike(User u, long id) throws SQLException;
 	
 	void getAllPostsOfGivenUser(User user) throws SQLException;
+
+	void addPostWithImage(Post post) throws SQLException;
+
+	void addPostWithoutImage(Post post) throws SQLException;
+	
+	String getPostImageById(long postId) throws SQLException;
 }

@@ -1,14 +1,15 @@
 package friendbook.model.post;
 
+import java.io.File;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
-import friendbook.model.comment.Comment;
 import friendbook.model.user.DBManager;
 import friendbook.model.user.User;
-import friendbook.model.user.UserDao;
 
 public class PostDao implements IPostDao {
 
@@ -31,24 +32,39 @@ public class PostDao implements IPostDao {
 	}
 
 	@Override
-	public void addPost(Post post) throws SQLException {
-		String query;
-		boolean hasImage = post.getImagePath() != null;
-		if (hasImage) {
-			query = "INSERT INTO posts(image_video_path, description, user_id) VALUES(?,?,?)";
-		} else {
-			query = "INSERT INTO posts(image_video_path, description, user_id) VALUES(null,?,?)";
+	public void addPostWithoutImage(Post post) throws SQLException {
+		String query = "INSERT INTO posts(image_video_path, description, user_id) VALUES(null,?,?)";
+
+		try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+			ps.setString(1, post.getText());
+			ps.setLong(2, post.getUser().getId());
+
+			ps.executeUpdate();
+
+			ResultSet rs = ps.getGeneratedKeys();
+			rs.next();
+			post.setId(rs.getLong(1));
 		}
-		try (PreparedStatement ps = connection.prepareStatement(query)) {
-			if (hasImage) {
-				ps.setString(1, post.getImagePath());
-			}
+	}
+
+	@Override
+	public void addPostWithImage(Post post) throws SQLException {
+		String query = "INSERT INTO posts(image_video_path, description, user_id) VALUES(?,?,?)";
+
+		try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+			ps.setString(1, post.getImagePath());
 			ps.setString(2, post.getText());
 			ps.setLong(3, post.getUser().getId());
-			ps.executeUpdate();
-		}
 
+			ps.executeUpdate();
+
+			ResultSet rs = ps.getGeneratedKeys();
+			rs.next();
+			post.setId(rs.getLong(1));
+
+		}
 	}
+
 
 	@Override
 	public void deletePost(long postId) throws SQLException {
@@ -71,6 +87,15 @@ public class PostDao implements IPostDao {
 		return likes;
 	}
 	
+	public String getPostImageById(long postId) throws SQLException {
+		String query = "SELECT image_video_path FROM posts WHERE id = ?";
+		try (PreparedStatement ps = connection.prepareStatement(query)) {
+			ps.setLong(1, postId);
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			return rs.getString("image_video_path");
+		}
+	}
 
 	@Override
 	public void getAllPostsOfGivenUser(User user) throws SQLException {
@@ -79,7 +104,8 @@ public class PostDao implements IPostDao {
 			ps.setLong(1, user.getId());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				Post p = new Post(rs.getLong("id"), rs.getString("image_video_path"), rs.getString("desctription") , user);
+				Post p = new Post(rs.getLong("id"), rs.getString("image_video_path"), rs.getString("desctription"),
+						user);
 				user.addPost(p);
 
 			}
@@ -105,5 +131,4 @@ public class PostDao implements IPostDao {
 			ps.executeUpdate();
 		}
 	}
-
 }

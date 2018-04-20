@@ -1,7 +1,10 @@
 package friendbook.controller.servlets;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
@@ -24,30 +27,41 @@ import friendbook.model.user.User;
  * Servlet implementation class AddPostServlet
  */
 @WebServlet("/post")
-@MultipartConfig(fileSizeThreshold=1024*1024*2,
-maxFileSize=1024*1024*5)
+@MultipartConfig
 public class PostServlet extends HttpServlet {
-	private static final String SAVE_PATH="C:\\Users\\snape\\Desktop\\JavaFinalProject\\Friendbook.bg\\WebContent";
+
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//test upload
-		response.setContentType("text/html");
-        Part file = request.getPart("file");
-        String fileName=extractfilename(file);
- 	    file.write(SAVE_PATH + File.separator + fileName);
- 	    String filePath= fileName ;
- 	    //test upload
- 	    
-//		Session.validateRequestIp(req, resp);
+
 		User user = (User)request.getSession().getAttribute("user");
-		Post post = new Post(user, (String)request.getParameter("text"), filePath);
+		Part filePart = request.getPart("file");
+		String name = extractfilename(filePart);
+		Post post = null;
+		if(!name.equals("")) {
+			File file = new File("D:\\photos\\" + user.getUsername());
+			if(!file.exists()) {
+				file.mkdirs();
+			}
+			File f = new File("D:\\photos\\"+user.getUsername()+"\\"+name);
+
+			InputStream is = filePart.getInputStream();
+			OutputStream os = new FileOutputStream(f);
+			int b = is.read();
+			while(b != -1) {
+				os.write(b);
+				b = is.read();
+			}
+			post = new Post(user, (String)request.getParameter("text"), f.getAbsolutePath());
+		} else {
+			post = new Post(user, (String)request.getParameter("text"), null);
+		}
 		
 		try {
 			PostManager.getInstance().addPost(post, request);
 			System.out.println("Added post to database.");
 			UserManager.getInstance().sessionCheck(request, response);
 		} catch (SQLException e) {
-			System.out.println("SQLBug: " + e.getMessage());
+			e.printStackTrace();
 		} catch(Exception e) {
 			System.out.println("Bug: " + e.getMessage());
 		}
@@ -63,7 +77,7 @@ public class PostServlet extends HttpServlet {
 	        }
 	        return "";
 	    }
-	
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		UserManager.getInstance().sessionCheck(req, resp);
