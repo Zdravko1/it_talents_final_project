@@ -47,7 +47,7 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
 <div class="w3-top">
  <div class="w3-bar w3-theme-d2 w3-left-align w3-large">
   <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
-  	<a href="http://localhost:8080/Friendbook.bg/" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>Home</a>
+  	<a href="http://localhost:8080/FriendBook/" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>Home</a>
   <a href="feed" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="News"><i class="fa fa-globe"></i></a>
   <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="My Account"><i class="fa fa-user"></i></a>
   <a href="logout" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Log Out</a>
@@ -129,10 +129,6 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
         </div>
       </div>
       
-      <%!
-      
-      %>
-      
       <% 
         ArrayList<Post> posts = visit ? (ArrayList)request.getSession().getAttribute("visitedUserPosts") : (ArrayList)request.getAttribute("posts");
       	if(posts != null){
@@ -142,7 +138,7 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
         <span class="w3-right w3-opacity"><%=  Math.abs(Duration.between(LocalDateTime.now(), p.getDate()).toHours())  %></span>
         <h4><%= p.getUser()	%></h4><br>
         <!-- -=============POST IMAGE================- -->
-        <img src="<%= p.getImagePath() %>" alt="Image" class="w3-left w3-circle w3-margin-right" > 
+        <img src="getPic?postId=<%= p.getId()%>" class="w3-left w3-margin-right" height="50%" width="50%" alt=""> 
         <hr class="w3-clear">
         <p><%= p.getText() %></p>
           <div class="w3-row-padding" style="margin:0 -16px">
