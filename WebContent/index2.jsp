@@ -102,9 +102,9 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
     </div>
     
     <!-- Middle Column -->
-    <div  class="w3-col m7">
+    <div id="middleColumnId" class="w3-col m7">
     
-      <div id="middleColumnId" class="w3-row-padding">
+      <div class="w3-row-padding">
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white" style="display : <%= visit ? "none" : "" %>">
             <div class="w3-container w3-padding">
@@ -145,7 +145,7 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
 	      </div>
 	   <form method="post" action="likePost">
 	      <input type="hidden" id="like" value="<%= posts.get(i).getId()%>">
-	      <input onclick="likePost(<%=i %>)" type="button"class="w3-button w3-theme-d1 w3-margin-bottom" class="fa fa-thumbs-up" value="Like">
+	      <input onclick="likePosts(<%=i %>)" type="button"class="w3-button w3-theme-d1 w3-margin-bottom" class="fa fa-thumbs-up" value="Like">
 	      <p class="likeID"><%= posts.get(i).getLikes() %></p>
       </form>
       
@@ -187,13 +187,14 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
 	  
       <%}} %>
       
-      
+      		<div id="commentID">
       		  <form action="comment" method="post">
-              	 <input contenteditable="true" class="w3-border w3-padding" name="text" required>
+              	 <input id="comment" contenteditable="true" class="w3-border w3-padding" name="text" required>
               	  <input type="hidden" name="currentPost" value="<%= posts.get(i).getId()%>">
               	 <br>
-              	 <button type="submit" class="w3-button w3-theme"><i class="fa fa-pencil"></i>Comment</button> 
+              	 <input type="button" class="w3-button w3-theme" value="Comment" onclick="addComment(<%=i%>, <%=posts.get(i).getId()%>)"> 
               </form>
+              </div>
          </div> 
       <%}} %>
     <!-- End Middle Column -->
@@ -212,7 +213,7 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
 </footer>
  
 <script>
-//addPost test
+//addPost
 function addPost(){
 	var p = document.getElementById('middleColumnId');
     var newElement = document.createElement("div");
@@ -235,7 +236,35 @@ function addPost(){
 		    
 		    newElement.innerHTML = "<br><br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><br><img src=\""+imagePath+"\" alt=\"Image\" class=\"w3-left w3-circle w3-margin-right\" ><hr class=\"w3-clear\"><p>"+text+"</p><div class=\"w3-row-padding\" style=\"margin:0 -16px\"></div><form method=\"post\" action=\"likePost\"><input type=\"hidden\" id=\"like\" value=\""+postId+"\"><input onclick=\"likePost("+postId+")\" type=\"button\"class=\"w3-button w3-theme-d1 w3-margin-bottom\" class=\"fa fa-thumbs-up\" value=\"Like\"><p class=\"likeID\">"+likes+"</p></form></div><form action=\"comment\" method=\"post\"><input contenteditable=\"true\" class=\"w3-border w3-padding\" name=\"text\" required><input type=\"hidden\" name=\"currentPost\" value=\""+postId+"\"><br><button type=\"submit\" class=\"w3-button w3-theme\"><i class=\"fa fa-pencil\"></i>Comment</button></form>";
 		    
-		    p.appendChild(newElement);
+		    p.insertBefore(newElement, p.childNodes[2]);
+		}
+	}
+}
+//addComment
+function addComment(a, b){
+	var p = document.getElementById('postId');
+	var newElement = document.createElement("div");
+	newElement.setAttribute('id', 'comment');
+	newElement.setAttribute('class', 'w3-container w3-card w3-white w3-round w3-margin');
+	
+	var request = new XMLHttpRequest();
+	request.open('POST', 'comment', true);
+	request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	request.send("text=" + document.getElementById("comment").value + "&currentPost=" + b);
+	request.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			var result = this.responseText;
+			result = JSON.parse(result);
+			
+			var user = result.user;
+			var text = result.text;
+			var id = result.id;
+			var index = document.getElementsByClassName("likeCommentID").length + 1;
+			var likes = result.likes;
+			
+			newElement.innerHTML = " <span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><p>"+text+"</p><form method=\"post\" action=\"likeComment\"><input type=\"hidden\" id=\"likeComment\" value=\""+id+"\"><input onclick=\"likeComments("+index+")\" type=\"button\" class=\"w3-button w3-theme-d1 w3-margin-bottom\" value=\"Like\"><p class=\"likeCommentID\">"+likes+"</p></form>";
+			console.log(newElement);
+			p.appendChild(newElement);
 		}
 	}
 }
@@ -255,7 +284,7 @@ function likeComments(a){
 	}
 }
 //likePost
-function likePost(a){
+function likePosts(a){
 	var like = document.getElementsByClassName("likeID")[a];
 	var request = new XMLHttpRequest();
 	request.open('POST', "likePost", true);

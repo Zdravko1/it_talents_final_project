@@ -59,12 +59,14 @@ public class UserDao implements IUserDao {
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
 			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
-			rs.next();
-			u = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"),
-					rs.getString("first_name"), rs.getString("last_name"));
-			ps.close();
-			return u;
+			if(rs.next()) {
+				u = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"),
+						rs.getString("first_name"), rs.getString("last_name"));
+				ps.close();
+				return u;
+			}
 		}
+		return u;
 	}
 
 	@Override
