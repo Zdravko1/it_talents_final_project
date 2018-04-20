@@ -2,6 +2,7 @@ package friendbook.controller.servlets;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,7 +25,6 @@ public class LikePostServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		int id = Integer.parseInt(req.getParameter("like"));
 		User u = (User)req.getSession().getAttribute("user");
-		
 		//check if this post was liked by the user before
 		//remove like if so or add a like
 		//if the page isnt his cash visited user's products in session so it can update the like count
@@ -35,15 +35,17 @@ public class LikePostServlet extends HttpServlet {
 				//if on feed reload posts and page
 				//if not "reloadVisitedUserPosts" checks if u are visiting someone's profile or not
 				//and reloads corresponding page
-				if(!reloadFeedPosts(req, resp)) {
-					reloadVisitedORUserPosts(req, resp);
-				}
+//				if(!reloadFeedPosts(req, resp)) {
+//					reloadVisitedORUserPosts(req, resp);
+				resp.getWriter().print(PostManager.getInstance().getLikes(id));
+//				}
 			} else {
 				PostManager.getInstance().increasePostLikes(u, id);
 				req.setAttribute("posts", UserManager.getInstance().getPostsByUserID(u.getId()));
-				if(!reloadFeedPosts(req, resp)) {
-					reloadVisitedORUserPosts(req, resp);
-				}
+//				if(!reloadFeedPosts(req, resp)) {
+//					reloadVisitedORUserPosts(req, resp);
+//				}
+				resp.getWriter().print(PostManager.getInstance().getLikes(id));
 			}
 		} catch (SQLException e) {
 			System.out.println("SQL Bug: " + e.getMessage());

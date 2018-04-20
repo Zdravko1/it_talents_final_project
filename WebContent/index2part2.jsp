@@ -14,6 +14,36 @@
 </footer>
  
 <script>
+//likeComment
+function likeComments(a){
+	var like = document.getElementsByClassName("likeCommentID")[a];
+	var request = new XMLHttpRequest();
+	request.open('POST', "likeComment", true);
+	request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	request.send("like=" + document.getElementById("likeComment").value);
+	request.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			var result = this.responseText;
+			result = JSON.parse(result);
+			like.innerHTML = result;
+		}
+	}
+}
+//like
+function likePost(a){
+	var like = document.getElementsByClassName("likeID")[a];
+	var request = new XMLHttpRequest();
+	request.open('POST', "likePost", true);
+	request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	request.send("like=" + document.getElementById("like").value);
+	request.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			var result = this.responseText;
+			result = JSON.parse(result);
+			like.innerHTML = result;
+		}
+	}
+}
 //search
 $(document).ready(function() {
     $(function() {

@@ -6,6 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import friendbook.controller.CommentManager;
+import friendbook.controller.PostManager;
+import friendbook.controller.UserManager;
 import friendbook.model.post.Post;
 import friendbook.model.user.DBManager;
 import friendbook.model.user.User;
@@ -155,5 +158,18 @@ public class CommentDao implements ICommentDao {
 			likes = rs.getInt("likes");
 		}
 		return likes;
+	}
+
+	public Comment getLastCommentByUserId(long id) throws SQLException {
+		String query = "SELECT id, text, date, user_id FROM comments WHERE user_id = ? ORDER BY date DESC LIMIT 1 ";
+		try(PreparedStatement ps = connection.prepareStatement(query)){
+			ps.setLong(1, id);
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			User u = UserManager.getInstance().getUser(rs.getInt("user_id"));
+			Comment c = new Comment(rs.getInt("id"), u.getId(), null, rs.getString("text"));
+			c.setDate(rs.getTimestamp("date").toLocalDateTime());
+			return c;
+		}
 	}
 }

@@ -55,7 +55,6 @@ public class PostDao implements IPostDao {
 			ps.setString(1, post.getImagePath());
 			ps.setString(2, post.getText());
 			ps.setLong(3, post.getUser().getId());
-
 			ps.executeUpdate();
 
 			ResultSet rs = ps.getGeneratedKeys();

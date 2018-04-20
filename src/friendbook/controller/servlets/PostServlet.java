@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
@@ -17,15 +18,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import friendbook.controller.PostManager;
 import friendbook.controller.Session;
 import friendbook.controller.UserManager;
 import friendbook.model.post.Post;
 import friendbook.model.user.User;
 
-/**
- * Servlet implementation class AddPostServlet
- */
+
 @WebServlet("/post")
 @MultipartConfig
 public class PostServlet extends HttpServlet {
@@ -59,7 +61,11 @@ public class PostServlet extends HttpServlet {
 		try {
 			PostManager.getInstance().addPost(post, request);
 			System.out.println("Added post to database.");
-			UserManager.getInstance().sessionCheck(request, response);
+			
+			String json = new Gson().toJson(UserManager.getInstance().getLastPostByUserId(user.getId()));
+			response.getWriter().print(json);
+			
+//			UserManager.getInstance().sessionCheck(request, response);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch(Exception e) {

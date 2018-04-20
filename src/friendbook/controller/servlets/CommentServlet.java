@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
+
 import friendbook.controller.CommentManager;
 import friendbook.controller.Session;
 import friendbook.controller.UserManager;
@@ -33,16 +35,13 @@ public class CommentServlet extends HttpServlet {
 		HttpSession s = request.getSession();
 		User user = (User) s.getAttribute("user");
 		long postId = Long.parseLong(request.getParameter("currentPost"));
-		Comment comment = new Comment(user.getId(), postId, null, request.getParameter("text"));
+		Comment comment = new Comment(user, user.getId(), postId, null, request.getParameter("text"));
 		
 		try {
 			CommentManager.getInstance().createComment(comment);
-			if(s.getAttribute("feed") != null || s.getAttribute("visitedUser") != null) {
-				request.getRequestDispatcher("index.jsp").forward(request, response);
-				return;
-			}
-			request.setAttribute("posts", UserManager.getInstance().getPostsByUserID(user.getId()));
-			request.getRequestDispatcher("index2.jsp").forward(request, response);
+
+			String json = new Gson().toJson(CommentManager.getInstance().getLastCommentByUserId(user.getId()));
+			response.getWriter().print(json);
 		} catch (SQLException e) {
 			System.out.println("SQLBug: " + e.getMessage());
 		} catch (Exception e) {

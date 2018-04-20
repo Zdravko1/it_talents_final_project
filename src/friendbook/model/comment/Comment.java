@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import friendbook.model.user.User;
+
 public class Comment {
 
 	private long id;
+	private User user;
 	private String text;
 	private long userId;
 	private long postId;
@@ -27,6 +30,14 @@ public class Comment {
 	public Comment(long id, long userId, long postId, Long parentComment, String text) {
 		this(userId, postId, parentComment, text);
 		this.id = id;
+	}
+	
+	public Comment(User user, long userId, long postId, Long parentComment, String text) {
+		this.user = user;
+		this.userId = userId;
+		this.postId = postId; 
+		this.parentComment = parentComment;
+		this.text = text;
 	}
 	
 	void setDate(LocalDateTime date) {

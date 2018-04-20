@@ -59,12 +59,14 @@ public class UserDao implements IUserDao {
 		try (PreparedStatement ps = connection.prepareStatement(query)) {
 			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
-			rs.next();
-			u = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"),
-					rs.getString("first_name"), rs.getString("last_name"));
-			ps.close();
-			return u;
+			if(rs.next()) {
+				u = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"),
+						rs.getString("first_name"), rs.getString("last_name"));
+				ps.close();
+				return u;
+			}
 		}
+		return u;
 	}
 
 	@Override
@@ -233,6 +235,21 @@ public class UserDao implements IUserDao {
 			}
 		}
 		return false;
+	}
+
+	public Post getLastPostByUserId(long id) throws SQLException {
+		String query = "SELECT id, image_video_path, description, date, user_id FROM posts WHERE user_id = ? ORDER BY date DESC LIMIT 1 ";
+		try(PreparedStatement ps = connection.prepareStatement(query)){
+			ps.setLong(1, id);
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			User u = getByID(rs.getInt("user_id"));
+			Post p = new Post(rs.getInt("id"), rs.getString("image_video_path"), rs.getString("description"), u);
+			p.setDate(rs.getTimestamp("date").toLocalDateTime());
+			p.setLikes(PostManager.getInstance().getLikes(p.getId()));
+			CommentDao.getInstance().getAndSetAllCommentsOfGivenPost(p);
+			return p;
+		}
 	}
 
 	

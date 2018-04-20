@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.JsonElement;
+
 import friendbook.model.comment.Comment;
 import friendbook.model.comment.CommentDao;
 import friendbook.model.post.Post;
@@ -37,7 +39,6 @@ public class CommentManager {
 
 	
 	public void createComment(Comment comment) throws SQLException {
-		//TODO check if working
 		CommentDao.getInstance().addComment(comment.getUserId() ,comment);
 	}
 
@@ -57,5 +58,15 @@ public class CommentManager {
 
 	public void increaseCommentLikes(long userId, long commentId) throws SQLException{
 		CommentDao.getInstance().likeComment(userId, commentId);
+	}
+
+
+	public int getLikes(long commentId) throws SQLException {
+		return CommentDao.getInstance().getLikesByID(commentId);
+	}
+
+
+	public Comment getLastCommentByUserId(long id) throws SQLException{
+		return CommentDao.getInstance().getLastCommentByUserId(id);
 	}
 }

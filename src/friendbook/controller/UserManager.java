@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.JsonElement;
+
 import friendbook.exceptions.ExistingUserException;
 import friendbook.exceptions.WrongCredentialsException;
 import friendbook.model.post.Post;
@@ -116,6 +118,10 @@ public class UserManager {
 
 	public boolean isFollower(User follower, long userId) throws SQLException {
 		return UserDao.getInstance().isFollower(follower, userId);
+	}
+
+	public Post getLastPostByUserId(long id) throws SQLException {
+		return UserDao.getInstance().getLastPostByUserId(id);
 	}
 
 }
