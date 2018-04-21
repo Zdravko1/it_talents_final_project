@@ -24,6 +24,7 @@ public class LikePostServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		int id = Integer.parseInt(req.getParameter("like"));
+		System.out.println(id);
 		User u = (User)req.getSession().getAttribute("user");
 		//check if this post was liked by the user before
 		//remove like if so or add a like

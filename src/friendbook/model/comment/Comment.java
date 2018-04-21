@@ -32,6 +32,11 @@ public class Comment {
 		this.id = id;
 	}
 	
+	public Comment(long id, long userId, long postId, Long parentComment, String text, User user) {
+		this(id, userId, postId, parentComment, text);
+		this.user = user;
+	}
+	
 	public Comment(User user, long userId, long postId, Long parentComment, String text) {
 		this.user = user;
 		this.userId = userId;

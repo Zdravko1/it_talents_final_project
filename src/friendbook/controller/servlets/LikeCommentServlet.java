@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+
 import friendbook.controller.CommentManager;
 import friendbook.controller.UserManager;
 import friendbook.model.user.User;
@@ -20,28 +22,35 @@ public class LikeCommentServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		long commentId = Long.parseLong(req.getParameter("like"));
 		User u = (User)req.getSession().getAttribute("user");
-		
+		System.out.println(commentId);
 		//check if this post was liked by the user before
 		//remove like if so or add a like
 		//if the page isnt his cash visited user's products in session so it can update the like count
 		try {
 			if(CommentManager.getInstance().isCommentLiked(u.getId(), commentId)) {
-				CommentManager.getInstance().decreaseCommentLikes(u.getId(), commentId);
-				req.setAttribute("posts", UserManager.getInstance().getPostsByUserID(u.getId()));
+				synchronized (u) {
+					CommentManager.getInstance().decreaseCommentLikes(u.getId(), commentId);
+					int likes = CommentManager.getInstance().getLikes(commentId);
+					System.out.println(likes);
+					resp.getWriter().print(likes);
+				}
+//				req.setAttribute("posts", UserManager.getInstance().getPostsByUserID(u.getId()));
 				//if on feed reload posts and page
 				//if not "reloadVisitedUserPosts" checks if u are visiting someone's profile or not
 				//and reloads corresponding page
 //				if(!reloadFeedPosts(req, resp)) {
 //					reloadVisitedORUserPosts(req, resp);
 //				}
-				resp.getWriter().print(CommentManager.getInstance().getLikes(commentId));
+				
 			} else {
-				CommentManager.getInstance().increaseCommentLikes(u.getId(), commentId);
-				req.setAttribute("posts", UserManager.getInstance().getPostsByUserID(u.getId()));
+				synchronized (u) {
+					CommentManager.getInstance().increaseCommentLikes(u.getId(), commentId);
+					resp.getWriter().print(CommentManager.getInstance().getLikes(commentId));
+				}
+			//	req.setAttribute("posts", UserManager.getInstance().getPostsByUserID(u.getId()));
 //				if(!reloadFeedPosts(req, resp)) {
 //					reloadVisitedORUserPosts(req, resp);
 //				}
-				resp.getWriter().print(CommentManager.getInstance().getLikes(commentId));
 			}
 		} catch (SQLException e) {
 			System.out.println("SQL Bug: " + e.getMessage());

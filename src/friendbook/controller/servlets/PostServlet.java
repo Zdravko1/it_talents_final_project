@@ -36,28 +36,31 @@ public class PostServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		User user = (User)request.getSession().getAttribute("user");
-		Part filePart = request.getPart("file");
-		String name = extractfilename(filePart);
 		Post post = null;
-		if(!name.equals("")) {
-			File file = new File("D:\\photos\\" + user.getUsername());
-			if(!file.exists()) {
-				file.mkdirs();
+		try{
+			Part filePart = request.getPart("file");
+			String name = extractfilename(filePart);
+			if(!name.equals("")) {
+				File file = new File("D:\\photos\\" + user.getUsername());
+				if(!file.exists()) {
+					file.mkdirs();
+				}
+				File f = new File("D:\\photos\\"+user.getUsername()+"\\"+name);
+	
+				InputStream is = filePart.getInputStream();
+				OutputStream os = new FileOutputStream(f);
+				int b = is.read();
+				while(b != -1) {
+					os.write(b);
+					b = is.read();
+				}
+				post = new Post(user, (String)request.getParameter("text"), f.getAbsolutePath());
 			}
-			File f = new File("D:\\photos\\"+user.getUsername()+"\\"+name);
-
-			InputStream is = filePart.getInputStream();
-			OutputStream os = new FileOutputStream(f);
-			int b = is.read();
-			while(b != -1) {
-				os.write(b);
-				b = is.read();
-			}
-			post = new Post(user, (String)request.getParameter("text"), f.getAbsolutePath());
-		} else {
-			post = new Post(user, (String)request.getParameter("text"), null);
+		} catch(Exception e) {
+			System.out.println("Bug: " + e.getMessage());
 		}
-		
+		post = new Post(user, (String)request.getParameter("text"), null);
+
 		try {
 			PostManager.getInstance().addPost(post, request);
 			System.out.println("Added post to database.");

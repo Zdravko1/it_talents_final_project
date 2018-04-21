@@ -34,10 +34,6 @@ public class FeedServlet extends HttpServlet {
 			User u = (User) req.getSession().getAttribute("user");
 			ArrayList<Post> feed = UserManager.getInstance().getUserFeed(u.getId());
 			req.getSession().setAttribute("feed", feed);
-			if(feed != null) {
-				req.getRequestDispatcher("index.jsp").forward(req, resp);
-				return;
-			}
 			req.getRequestDispatcher("index2.jsp").forward(req, resp);
 		} catch (SQLException e) {
 			System.out.println("SQL Bug: " + e.getMessage());

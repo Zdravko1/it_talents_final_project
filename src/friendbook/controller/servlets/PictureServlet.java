@@ -30,7 +30,6 @@ public class PictureServlet extends HttpServlet {
 		try {
 			String imagePath = PostDao.getInstance().getPostImageById(postId);
 			if(imagePath != null) {
-				System.out.println(imagePath);
 				File f = new File(imagePath);
 				InputStream is = new FileInputStream(f);
 				OutputStream os = resp.getOutputStream();

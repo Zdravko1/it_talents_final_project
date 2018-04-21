@@ -161,13 +161,13 @@ public class CommentDao implements ICommentDao {
 	}
 
 	public Comment getLastCommentByUserId(long id) throws SQLException {
-		String query = "SELECT id, text, date, user_id FROM comments WHERE user_id = ? ORDER BY date DESC LIMIT 1 ";
+		String query = "SELECT id, text, date, post_id, user_id FROM comments WHERE user_id = ? ORDER BY date DESC LIMIT 1 ";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
 			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
 			rs.next();
 			User u = UserManager.getInstance().getUser(rs.getInt("user_id"));
-			Comment c = new Comment(rs.getInt("id"), u.getId(), null, rs.getString("text"));
+			Comment c = new Comment(rs.getLong("id"), rs.getLong("user_id"), rs.getInt("post_id"), null, rs.getString("text"), u);
 			c.setDate(rs.getTimestamp("date").toLocalDateTime());
 			return c;
 		}
