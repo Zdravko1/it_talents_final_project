@@ -37,7 +37,7 @@ public class Comment {
 		this.userId = userId;
 		this.postId = postId; 
 		this.parentComment = parentComment;
-		this.text = text;
+		setText(text);
 	}
 	
 	void setDate(LocalDateTime date) {

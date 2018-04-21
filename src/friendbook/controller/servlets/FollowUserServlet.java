@@ -8,6 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.catalina.storeconfig.IStoreFactory;
+
+import com.google.gson.Gson;
+
+import friendbook.controller.CommentManager;
 import friendbook.controller.Session;
 import friendbook.controller.UserManager;
 import friendbook.model.user.User;
@@ -25,8 +30,9 @@ public class FollowUserServlet extends HttpServlet {
 		long followedId = Long.parseLong(req.getParameter("followedId"));
 		try {
 			UserManager.getInstance().follow(user, followedId);
-			System.out.println("followed someone");
-			req.getRequestDispatcher("index2.jsp").forward(req, resp);
+			System.out.println("followed");
+			String json = new Gson().toJson(UserManager.getInstance().isFollower(user, followedId) ? "Followed" : "Follow");
+			resp.getWriter().print(json);
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println("Bug: " + e.getMessage());

@@ -81,16 +81,9 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
          <h4 class="w3-center"><%= (visit) ? u : request.getSession().getAttribute("user") %></h4>
          <div style="display : <%= !visit ? "none" : "" %>">
          	
-         		<% if(visit){
-         			if(!u.isFollowed()){%>
-         		<form method="post" action="follow">
-         		<button type="submit" name="followedId" value="<%=u.getId()%>" class="w3-button w3-theme"><i class="fa fa-handshake-o"></i>Follow</button>
-         		</form>
-         		<% } else {%>
-         		<form method="post" action="follow">
-         		<button type="submit" name="followedId" value="<%=u.getId()%>" class="w3-button w3-theme"><i class="fa fa-handshake-o"></i>Followed</button>
-         		</form>
-         		<%}}%>
+         		<% if(visit){%>
+         			<button id="follow" name="followedId" onclick="follow()" value="<%=u.getId()%>" class="w3-button w3-theme"><%=u.isFollowed() ? "Followed" : "Follow" %></button>
+         		<%}%>
          	
          </div>
          <hr>
@@ -139,7 +132,7 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
         <h4><%= posts.get(i).getUser()	%></h4><br>
         <!-- -=============POST IMAGE================- -->
         <img src="getPic?postId=<%= posts.get(i).getId()%>" class="w3-left w3-margin-right" height="50%" width="50%" alt=""> 
-        <img src="<%= posts.get(i).getImagePath() %>" alt="Image" class="w3-left w3-circle w3-margin-right" > 
+        <img src="<%= posts.get(i).getImagePath() %>" alt="" class="w3-left w3-circle w3-margin-right" > 
         <hr class="w3-clear">
         <p><%= posts.get(i).getText() %></p>
           <div class="w3-row-padding" style="margin:0 -16px">
@@ -214,6 +207,22 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
 </footer>
  
 <script>
+
+function follow() {
+	var element = document.getElementById("follow");
+	var value = element.value;
+	var request = new XMLHttpRequest();
+	request.open("POST","follow");
+	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	request.send("followedId=" +value);
+	request.onreadystatechange=function() {
+	    if (this.readyState == 4 && this.status == 200) {
+	    	var result = this.responseText;
+	    	result = JSON.parse(result);
+	      	element.innerHTML = result;
+	    }
+	  }
+}
 //addPost
 function addPost(){
 	var p = document.getElementById('middleColumnId');

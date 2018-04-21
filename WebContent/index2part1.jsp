@@ -71,18 +71,10 @@ boolean visit = request.getSession().getAttribute("visitedUser") != null;
          <h4 class="w3-center"><%= (visit) ? "Profile" : "My Profile"%></h4>
          <h4 class="w3-center"><%= (visit) ? request.getSession().getAttribute("visitedUser") : request.getSession().getAttribute("user") %></h4>
           <div style="display : <%= !visit ? "none" : "" %>">
-         	
-         		<% if(visit){
-         			if(!u.isFollowed()){%>
-         		<form method="post" action="follow">
-         		<button type="submit" name="followedId" value="<%=u.getId()%>" class="w3-button w3-theme"><i class="fa fa-handshake-o"></i>Follow</button>
-         		</form>
-         		<% } else {%>
-         		<form method="post" action="follow">
-         		<button type="submit" name="followedId" value="<%=u.getId()%>" class="w3-button w3-theme"><i class="fa fa-handshake-o"></i>Followed</button>
-         		</form>
-         		<%}}%>
-         	
+
+				<% if(visit){%>
+         			<button id="follow" name="followedId" onclick="follow()" value="<%=u.getId()%>" class="w3-button w3-theme">Follow</button>
+         		<%}%>
          </div>
          <hr>
         </div>
@@ -117,3 +109,23 @@ boolean visit = request.getSession().getAttribute("visitedUser") != null;
           </form>
         </div>
       </div>
+      
+      
+<script>
+	function follow() {
+		var element = document.getElementById("follow");
+		var value = element.value;
+		alert("gmm");
+		var request = new XMLHttpRequest();
+		request.open("POST","follow");
+		request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		request.send("followedId=" +value);
+		request.onreadystatechange=function() {
+		    if (this.readyState == 4 && this.status == 200) {
+		    	var result = this.responseText;
+		    	result = JSON.parse(result);
+		      	element.innerHTML = result;
+		    }
+		  }
+	}
+</script>
