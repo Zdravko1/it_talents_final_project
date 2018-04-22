@@ -81,9 +81,9 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
          <h4 class="w3-center"><%= (visit) ? u : request.getSession().getAttribute("user") %></h4>
          <div style="display : <%= !visit ? "none" : "" %>">
          	
-         		<% if(visit){%>
-         			<button id="follow" name="followedId" onclick="follow()" value="<%=u.getId()%>" class="w3-button w3-theme"><%=u.isFollowed() ? "Followed" : "Follow" %></button>
-         		<%}%>
+        		<% if(visit){%>
+        			<button id="follow" name="followedId" onclick="follow()" value="<%=u.getId()%>" class="w3-button w3-theme"><%=u.isFollowed() ? "Followed" : "Follow" %></button>
+        		<%}%>
          	
          </div>
          <hr>
@@ -219,12 +219,12 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
 </footer>
  
 <script>
-
+//follow
 function follow() {
 	var element = document.getElementById("follow");
 	var value = element.value;
 	var request = new XMLHttpRequest();
-	request.open("POST","follow");
+	request.open("POST","follow", true);
 	request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	request.send("followedId=" +value);
 	request.onreadystatechange=function() {
@@ -239,6 +239,7 @@ function follow() {
 var likeCommentId = <%= likeCommentID+1%>;
 var comment_id = <%= commentID+1%>;
 var like_id = <%= i+1%>;
+
 function addPost(){
 	var p = document.getElementById('middleColumnId');
     var newElement = document.createElement("div");
