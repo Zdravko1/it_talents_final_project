@@ -47,8 +47,8 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
 <div class="w3-top">
  <div class="w3-bar w3-theme-d2 w3-left-align w3-large">
   <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
-  	<a href="http://localhost:8080/Friendbook.bg/" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>Home</a>
-  <a href="feed" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="News"><i class="fa fa-globe"></i></a>
+  	<a href="." class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>Home</a>
+  <a href="." class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="News"><i class="fa fa-globe"></i></a>
   <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="My Account"><i class="fa fa-user"></i></a>
   <a href="logout" class="w3-bar-item w3-button w3-padding-large w3-right w3-theme-d4">Log Out</a>
   
@@ -104,7 +104,7 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
               <h6 class="w3-opacity">Post something</h6>
               <form action="post" method="post" enctype="multipart/form-data">
               	<input id="post" contenteditable="true" class="w3-border w3-padding" name="text" required>
-				<input type="file" name="file" size="50" />
+				<input id="file" type="file" name="file" size="50" />
 				<br />
               	 <br>
               	 <br>
@@ -189,6 +189,15 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
 	      <input onclick="likeComments(<%=likeCommentID%>)" type="button" class="w3-button w3-theme-d1 w3-margin-bottom" value="Like">
 	       <p id="likeCommentID<%=likeCommentID++%>"><%= comments.get(j).getLikes() %></p>
       </form>
+      
+      <div id="commentID">
+      		  <form action="comment" method="post">
+              	 <input id="commentID<%=commentID %>" contenteditable="true" class="w3-border w3-padding" name="text" required>
+              	  <input type="hidden" name="currentPost" value="<%= posts.get(i).getId()%>">
+              	 <br>
+              	 <input type="button" class="w3-button w3-theme" value="Comment" onclick="addComment(<%=i %>, <%=posts.get(i).getId()%>, <%=commentID++%>, <%= comments.get(j).getId()%>)"> 
+              </form>
+              </div>
 	  </div>
 	  
       <%}} %>
@@ -249,7 +258,7 @@ function addPost(){
     var request = new XMLHttpRequest();
 	request.open('POST', "post", true);
 	request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	request.send("text=" + document.getElementById("post").value);
+	request.send("text=" + document.getElementById("post").value + "&file=" + document.getElementById("file"));
 	request.onreadystatechange = function(){
 		if(this.readyState == 4 && this.status == 200){
 			var result = this.responseText;
@@ -269,16 +278,18 @@ function addPost(){
 	}
 }
 //addComment
-function addComment(a, b, c){
+function addComment(a, b, c, d){
 	var p = document.getElementById('postId'+a);
 	var newElement = document.createElement("div");
 	newElement.setAttribute('id', 'comment');
 	newElement.setAttribute('class', 'w3-container w3-card w3-white w3-round w3-margin');
-	
+	if (typeof d === 'undefined') {
+		var d = null;
+	}
 	var request = new XMLHttpRequest();
 	request.open('POST', 'comment', true);
 	request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	request.send("text=" + document.getElementById("commentID"+c).value + "&currentPost=" + b);
+	request.send("text=" + document.getElementById("commentID"+c).value + "&currentPost=" + b + "&currentComment=" + d);
 	request.onreadystatechange = function(){
 		if(this.readyState == 4 && this.status == 200){
 			var result = this.responseText;
@@ -296,6 +307,7 @@ function addComment(a, b, c){
 		}
 	}
 }
+
 //likeComment
 function likeComments(a){
 	var like = document.getElementById("likeCommentID"+a);
