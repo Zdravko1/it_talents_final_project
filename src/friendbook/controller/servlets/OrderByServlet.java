@@ -25,9 +25,6 @@ public class OrderByServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String orderBy = req.getParameter("order");
 		User u = (User)req.getSession().getAttribute("user");
-		//check if this post was liked by the user before
-		//remove like if so or add a like
-		//if the page isnt his cash visited user's products in session so it can update the like count
 		try {
 			List<Post> posts = UserManager.getInstance().getPostsByUserID(u.getId());
 			req.setAttribute("posts", orderBy(posts, orderBy));
@@ -47,7 +44,7 @@ public class OrderByServlet extends HttpServlet {
 		if(onFeed) {
 			List<Post> posts = (List)UserManager.getInstance().getUserFeed(u.getId());
 			req.getSession().setAttribute("feed", orderBy(posts, orderBy));
-			req.getRequestDispatcher("index.jsp").forward(req, resp);
+			req.getRequestDispatcher("index2.jsp").forward(req, resp);
 			return true;
 		}
 		return false;
@@ -66,7 +63,6 @@ public class OrderByServlet extends HttpServlet {
 		System.out.println("vliza");
 		switch(order) {
 		case "likes": Collections.sort(posts, (p1, p2) -> (p2.getLikes()-p1.getLikes())); return posts;
-		case "date" : Collections.sort(posts, (p1, p2) -> (p2.getDate().compareTo(p1.getDate()))); return posts;
 			default: return posts;
 		}
 	}

@@ -71,17 +71,18 @@ public class UserDao implements IUserDao {
 
 	@Override
 	public void saveUser(User u) throws SQLException {
-		try (PreparedStatement ps = connection.prepareStatement(
-				"INSERT INTO users(username, password, email, first_name, last_name) VALUES(?, ?, ?, ?, ?)")) {
-			ps.setString(1, u.getUsername());
-			String hashedPassword = BCrypt.hashpw(u.getPassword(), BCrypt.gensalt());
-			ps.setString(2, hashedPassword);
-			ps.setString(3, u.getEmail());
-			ps.setString(4, u.getFirstName());
-			ps.setString(5, u.getLastName());
-			ps.executeUpdate();
+		synchronized (u) {
+			try (PreparedStatement ps = connection.prepareStatement(
+					"INSERT INTO users(username, password, email, first_name, last_name) VALUES(?, ?, ?, ?, ?)")) {
+				ps.setString(1, u.getUsername());
+				String hashedPassword = BCrypt.hashpw(u.getPassword(), BCrypt.gensalt());
+				ps.setString(2, hashedPassword);
+				ps.setString(3, u.getEmail());
+				ps.setString(4, u.getFirstName());
+				ps.setString(5, u.getLastName());
+				ps.executeUpdate();
+			}
 		}
-
 	}
 		
 	@Override
@@ -157,6 +158,7 @@ public class UserDao implements IUserDao {
 				posts.add(p);
 			}
 		}
+		System.out.println(posts);
 		return posts;
 	}
 	
@@ -205,7 +207,7 @@ public class UserDao implements IUserDao {
 	@Override
 	public ArrayList<Post> getUserFeedByID(long id) throws SQLException {
 		ArrayList<Post> feed = new ArrayList<>();
-		String query = "SELECT id, image_video_path, description, date, user_id FROM posts WHERE user_id IN (SELECT user_id FROM users_has_users WHERE user_id_follower = ?)";
+		String query = "SELECT id, image_video_path, description, date, user_id FROM posts WHERE user_id IN (SELECT user_id_followed FROM users_has_users WHERE user_id_follower = ?) ORDER BY date DESC";
 		try(PreparedStatement ps = connection.prepareStatement(query)){
 			ps.setLong(1, id);
 			ResultSet rs = ps.executeQuery();
@@ -218,7 +220,6 @@ public class UserDao implements IUserDao {
 				feed.add(p);
 			}
 		}
-		Collections.sort(feed, (p1, p2) -> (p2.getLikes()-p1.getLikes()));
 		return feed;
 	}
 

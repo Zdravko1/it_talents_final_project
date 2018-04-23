@@ -103,9 +103,9 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
             <div class="w3-container w3-padding">
               <h6 class="w3-opacity">Post something</h6>
               <form action="post" method="post" enctype="multipart/form-data">
-              	<input id="post" contenteditable="true" class="w3-border w3-padding" name="text" required>
-				<input type="file" name="file" size="50" />
-				<br />
+              	<input id="post" contenteditable="true" class="w3-border w3-padding" type="text" name="text" required>
+				<input id="fileId" type="file" name="file" size="50" />
+				 <br>
               	 <br>
               	 <br>
               	 <input onclick="addPost()" class="w3-button w3-theme" type="button" value="Post">
@@ -241,32 +241,58 @@ var comment_id = <%= commentID+1%>;
 var like_id = <%= i+1%>;
 
 function addPost(){
+	var flag = true;
 	var p = document.getElementById('middleColumnId');
     var newElement = document.createElement("div");
     newElement.setAttribute('id', 'postId'+like_id+'');
     newElement.setAttribute('class', 'w3-container w3-card w3-white w3-round w3-margin');
     
-    var request = new XMLHttpRequest();
-	request.open('POST', "post", true);
-	request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	request.send("text=" + document.getElementById("post").value);
-	request.onreadystatechange = function(){
-		if(this.readyState == 4 && this.status == 200){
-			var result = this.responseText;
-			result = JSON.parse(result);
-			var user = result.user.firstName + ' ' + result.user.lastName;
-		    var imagePath = result.imagePath;
-		    var text = result.text;
-		    var postId = result.id;
-		    var likes = result.likes;
-		    var likeId = like_id++;
-		    var commentId = comment_id++;
-		    
-		    newElement.innerHTML = "<br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><br><img src=\""+imagePath+"\" alt=\"Image\" class=\"w3-left w3-circle w3-margin-right\" ><hr class=\"w3-clear\"><p>"+text+"</p><div class=\"w3-row-padding\" style=\"margin:0 -16px\"></div><form method=\"post\" action=\"likePost\"><input type=\"hidden\" id=\"like"+likeId+"\" value=\""+postId+"\"><input onclick=\"likePosts("+likeId+")\" type=\"button\"class=\"w3-button w3-theme-d1 w3-margin-bottom\" class=\"fa fa-thumbs-up\" value=\"Like\"><p id=\"likeID"+likeId+"\">"+likes+"</p></form></div><form action=\"comment\" method=\"post\"><input id=\"commentID"+commentId+"\" contenteditable=\"true\" class=\"w3-border w3-padding\" name=\"text\" required><input type=\"hidden\" name=\"currentPost\" value=\""+postId+"\"><br><input type=\"button\" class=\"w3-button w3-theme\" value=\"Comment\" onclick=\"addComment("+likeId+", "+postId+", "+commentId+")\"></form>";
-		    console.log(newElement);
-		    p.insertBefore(newElement, p.childNodes[2]);
-		}
+    
+    var file = document.getElementById('fileId').files[0];
+    var data = 'text=' + document.getElementById('post').value;
+    
+    function getBase64(file) {
+    	   var reader = new FileReader();
+    	   if(file != null){
+    	   	reader.readAsDataURL(file);
+    	   }
+    	   reader.onload = function () {
+    		   data += '&file=' + reader.result;
+    		   send(data);
+    	   };
+    	   reader.onerror = function (error) {
+    	     console.log('Error: ', error);
+    	   };
+    	}
+
+    getBase64(file);
+    if(file == null){
+    	send(data);
 	}
+    
+     function send(data){
+	    var request = new XMLHttpRequest();
+		request.open('POST', "post", true);
+		request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+		request.send(data);
+		request.onreadystatechange = function(){
+			if(this.readyState == 4 && this.status == 200){
+				var result = this.responseText;
+				result = JSON.parse(result);
+				var user = result.user.firstName + ' ' + result.user.lastName;
+			    var imagePath = result.imagePath;
+			    var text = result.text;
+			    var postId = result.id;
+			    var likes = result.likes;
+			    var likeId = like_id++;
+			    var commentId = comment_id++;
+			    
+			    console.log(likeId);
+			    newElement.innerHTML = "<br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><br><img src=\""+imagePath+"\" alt=\"Image\" class=\"w3-left w3-circle w3-margin-right\" ><hr class=\"w3-clear\"><p>"+text+"</p><div class=\"w3-row-padding\" style=\"margin:0 -16px\"></div><form method=\"post\" action=\"likePost\"><input type=\"hidden\" id=\"like"+likeId+"\" value=\""+postId+"\"><input onclick=\"likePosts("+likeId+")\" type=\"button\"class=\"w3-button w3-theme-d1 w3-margin-bottom\" class=\"fa fa-thumbs-up\" value=\"Like\"><p id=\"likeID"+likeId+"\">"+likes+"</p></form></div><form action=\"comment\" method=\"post\"><input id=\"commentID"+commentId+"\" contenteditable=\"true\" class=\"w3-border w3-padding\" name=\"text\" required><input type=\"hidden\" name=\"currentPost\" value=\""+postId+"\"><br><input type=\"button\" class=\"w3-button w3-theme\" value=\"Comment\" onclick=\"addComment("+likeId+", "+postId+", "+commentId+")\"></form>";
+			    p.insertBefore(newElement, p.childNodes[2]);
+			}
+		}
+    }
 }
 //addComment
 function addComment(a, b, c){
@@ -274,7 +300,7 @@ function addComment(a, b, c){
 	var newElement = document.createElement("div");
 	newElement.setAttribute('id', 'comment');
 	newElement.setAttribute('class', 'w3-container w3-card w3-white w3-round w3-margin');
-	
+	console.log(a);
 	var request = new XMLHttpRequest();
 	request.open('POST', 'comment', true);
 	request.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
@@ -291,8 +317,7 @@ function addComment(a, b, c){
 			var commentId = likeCommentId++;
 			
 			newElement.innerHTML = " <br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><p>"+text+"</p><form method=\"post\" action=\"likeComment\"><input type=\"hidden\" id=\"likeComment"+commentId+"\" value=\""+id+"\"><input onclick=\"likeComments("+commentId+")\" type=\"button\" class=\"w3-button w3-theme-d1 w3-margin-bottom\" value=\"Like\"><p id=\"likeCommentID"+commentId+"\">"+likes+"</p></form>";
-			console.log(newElement);
-			p.appendChild(newElement);
+			p.insertBefore(newElement, p.lastChild.previousSibling);
 		}
 	}
 }
@@ -307,7 +332,6 @@ function likeComments(a){
 		if(this.readyState == 4 && this.status == 200){
 			var result = this.responseText;
 			result = JSON.parse(result);
-			console.log(result);
 			like.innerHTML = result;
 		}
 	}
@@ -323,7 +347,6 @@ function likePosts(a){
 		if(this.readyState == 4 && this.status == 200){
 			var result = this.responseText;
 			result = JSON.parse(result);
-			console.log(result);
 			like.innerHTML = result;
 		}
 	}
@@ -349,27 +372,6 @@ $(document).ready(function() {
      });
   });
 });
-// Accordion
-function myFunction(id) {
-    var x = document.getElementById(id);
-    if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-        x.previousElementSibling.className += " w3-theme-d1";
-    } else { 
-        x.className = x.className.replace("w3-show", "");
-        x.previousElementSibling.className = 
-        x.previousElementSibling.className.replace(" w3-theme-d1", "");
-    }
-}
-// Used to toggle the menu on smaller screens when clicking on the menu button
-function openNav() {
-    var x = document.getElementById("navDemo");
-    if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-    } else { 
-        x.className = x.className.replace(" w3-show", "");
-    }
-}
 </script>
 
 </body>

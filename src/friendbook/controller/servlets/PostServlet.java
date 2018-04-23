@@ -1,13 +1,11 @@
 package friendbook.controller.servlets;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Base64;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -19,7 +17,6 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import friendbook.controller.PostManager;
 import friendbook.controller.Session;
@@ -37,55 +34,57 @@ public class PostServlet extends HttpServlet {
 
 		User user = (User)request.getSession().getAttribute("user");
 		Post post = null;
-		try{
-			Part filePart = request.getPart("file");
-			String name = extractfilename(filePart);
-			if(!name.equals("")) {
+		//test
+		try {
+			String image = request.getParameter("file");
+			System.out.println(image);
+			if(image != null) {
+				image = image.split(",")[1].replaceAll(" ", "+");
+				System.out.println(image);
+				String imageName = "image"+image.substring(0, 10)+".jpg";
 				File file = new File("D:\\photos\\" + user.getUsername());
 				if(!file.exists()) {
 					file.mkdirs();
 				}
-				File f = new File("D:\\photos\\"+user.getUsername()+"\\"+name);
-	
-				InputStream is = filePart.getInputStream();
-				OutputStream os = new FileOutputStream(f);
-				int b = is.read();
-				while(b != -1) {
-					os.write(b);
-					b = is.read();
-				}
-				post = new Post(user, (String)request.getParameter("text"), f.getAbsolutePath());
+				file = new File("D:\\photos\\"+user.getUsername()+"\\"+imageName);
+				file.createNewFile();
+				
+				decoder(image, file);
+				
+				post = new Post(user, (String)request.getParameter("text"), file.getAbsolutePath());
+			} else {
+				post = new Post(user, (String)request.getParameter("text"), null);
 			}
 		} catch(Exception e) {
-			System.out.println("Bug: " + e.getMessage());
+			e.printStackTrace();
 		}
-		post = new Post(user, (String)request.getParameter("text"), null);
-
+		
 		try {
 			PostManager.getInstance().addPost(post, request);
 			System.out.println("Added post to database.");
 			
 			String json = new Gson().toJson(UserManager.getInstance().getLastPostByUserId(user.getId()));
+			System.out.println(json);
 			response.getWriter().print(json);
-			
-//			UserManager.getInstance().sessionCheck(request, response);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch(Exception e) {
-			System.out.println("Bug: " + e.getMessage());
+			System.out.println("Bug2: " );
+			e.printStackTrace();
 		}
 	}
 	
-	 private String extractfilename(Part file) {
-	        String cd = file.getHeader("content-disposition");
-	        String[] items = cd.split(";");
-	        for (String string : items) {
-	            if (string.trim().startsWith("filename")) {
-	                return string.substring(string.indexOf("=") + 2, string.length()-1);
-	            }
-	        }
-	        return "";
-	    }
+	public static void decoder(String base64Image, File f) {
+		try (FileOutputStream imageOutFile = new FileOutputStream(f)) {
+			byte[] btDataFile = new sun.misc.BASE64Decoder().decodeBuffer(base64Image);
+			imageOutFile.write(btDataFile);
+			imageOutFile.flush();
+		} catch (FileNotFoundException e) {
+			System.out.println("Image not found" + e);
+		} catch (IOException ioe) {
+			System.out.println("Exception while reading the Image " + ioe);
+		}
+	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
