@@ -85,8 +85,9 @@ public class CommentDao implements ICommentDao {
 			if (!isParentless) {
 				statement.setLong(3, comment.getParentComment());
 				statement.setLong(4, userId);
-			}
-			statement.setLong(3, userId);
+			} else {
+				statement.setLong(3, userId);
+			}			
 			statement.executeUpdate();
 			ResultSet rs = statement.getGeneratedKeys();
 			rs.next();

@@ -29,14 +29,15 @@ public class CommentServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		//TODO fix  bugavo e
-//		Session.validateRequestIp(request, response);
 
 		HttpSession s = request.getSession();
 		User user = (User) s.getAttribute("user");
 		long postId = Long.parseLong(request.getParameter("currentPost"));
-		Comment comment = new Comment(user, user.getId(), postId, null, request.getParameter("text"));
-		
+		Long commentId = null;
+		if(!request.getParameter("currentComment").equals(null)) {
+			 commentId = Long.parseLong(request.getParameter("currentComment"));
+		}
+		Comment comment = new Comment(user, user.getId(), postId, commentId, request.getParameter("text"));
 		try {
 			CommentManager.getInstance().createComment(comment);
 
