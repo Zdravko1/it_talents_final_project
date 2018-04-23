@@ -104,7 +104,7 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
               <h6 class="w3-opacity">Post something</h6>
               <form action="post" method="post" enctype="multipart/form-data">
               	<input id="post" contenteditable="true" class="w3-border w3-padding" name="text" required>
-				<input id="file" type="file" name="file" size="50" />
+				<input id="fileId" type="file" name="file" size="50" />
 				<br>
               	 <br>
               	 <br>
@@ -144,7 +144,6 @@ boolean onFeed = request.getSession().getAttribute("feed") != null; %>
         <h4><%= posts.get(i).getUser()	%></h4><br>
         <!-- -=============POST IMAGE================- -->
         <img src="getPic?postId=<%= posts.get(i).getId()%>" class="w3-left w3-margin-right" height="50%" width="50%" alt=""> 
-        <img src="<%= posts.get(i).getImagePath() %>" alt="" class="w3-left w3-circle w3-margin-right" > 
         <hr class="w3-clear">
         <p><%= posts.get(i).getText() %></p>
           <div class="w3-row-padding" style="margin:0 -16px">
@@ -295,8 +294,8 @@ function addPost(){
 			    var likeId = like_id++;
 			    var commentId = comment_id++;
 			    
-			    console.log(likeId);
-			    newElement.innerHTML = "<br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><br><img src=\""+imagePath+"\" alt=\"Image\" class=\"w3-left w3-circle w3-margin-right\" ><hr class=\"w3-clear\"><p>"+text+"</p><div class=\"w3-row-padding\" style=\"margin:0 -16px\"></div><form method=\"post\" action=\"likePost\"><input type=\"hidden\" id=\"like"+likeId+"\" value=\""+postId+"\"><input onclick=\"likePosts("+likeId+")\" type=\"button\"class=\"w3-button w3-theme-d1 w3-margin-bottom\" class=\"fa fa-thumbs-up\" value=\"Like\"><p id=\"likeID"+likeId+"\">"+likes+"</p></form></div><form action=\"comment\" method=\"post\"><input id=\"commentID"+commentId+"\" contenteditable=\"true\" class=\"w3-border w3-padding\" name=\"text\" required><input type=\"hidden\" name=\"currentPost\" value=\""+postId+"\"><br><input type=\"button\" class=\"w3-button w3-theme\" value=\"Comment\" onclick=\"addComment("+likeId+", "+postId+", "+commentId+")\"></form>";
+			    var imageElement = "<img src=\"getPic?postId="+postId+"\" class=\"w3-left w3-margin-right\" height=\"50%\" width=\"50%\" alt=\"\">";			    
+			    newElement.innerHTML = "<br><span class=\"w3-right w3-opacity\">0</span><h4>"+user+"</h4><br>"+imageElement+"<hr class=\"w3-clear\"><p>"+text+"</p><div class=\"w3-row-padding\" style=\"margin:0 -16px\"></div><form method=\"post\" action=\"likePost\"><input type=\"hidden\" id=\"like"+likeId+"\" value=\""+postId+"\"><input onclick=\"likePosts("+likeId+")\" type=\"button\"class=\"w3-button w3-theme-d1 w3-margin-bottom\" class=\"fa fa-thumbs-up\" value=\"Like\"><p id=\"likeID"+likeId+"\">"+likes+"</p></form></div><form action=\"comment\" method=\"post\"><input id=\"commentID"+commentId+"\" contenteditable=\"true\" class=\"w3-border w3-padding\" name=\"text\" required><input type=\"hidden\" name=\"currentPost\" value=\""+postId+"\"><br><input type=\"button\" class=\"w3-button w3-theme\" value=\"Comment\" onclick=\"addComment("+likeId+", "+postId+", "+commentId+")\"></form>";
 			    p.insertBefore(newElement, p.childNodes[2]);
 			}
 		}
